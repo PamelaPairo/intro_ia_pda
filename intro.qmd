@@ -1,5 +1,5 @@
 ---
-title: "Aprendizaje Automático"
+title: "Prácticas en Ciencia de Datos"
 author: 
 - Pamela E. Pairo
 - Posgrado Digital Accounting
@@ -13,7 +13,7 @@ format:
     width: 1600
     height: 1000
     logo: "img/logo.jpg"
-    footer: "[Introducción al Aprendizaje Automático- PDA](https://github.com/PamelaPairo/clases_pda)"
+    footer: "[Introducción al Aprendizaje Automático y IA- PDA](https://github.com/PamelaPairo/intro_ia_pda)"
     chalkboard:
       theme: whiteboard
       boardmarker-width: 5
@@ -34,15 +34,16 @@ Formación: Lic. y Dra en Cs Biológicas (Ecóloga de Comunidades)
 
 . . .
 
-Comencé el camino de la Ciencia de Datos en el 2020.
+
+Área de Desarrollos y Soluciones Ambientales de la Comisión Nacional de Actividades Espaciales (CONAE)
 
 . . .
 
-Trabajé en el Área de Desarrollos y Soluciones Ambientales de la Comisión Nacional de Actividades Espaciales (CONAE)
+División Sistemas de Información Geoespacial - AFIP
 
 . . .
 
-Actualmente trabajo en la División Sistemas de Información Geoespacial - AFIP
+Bizzer y como freelancer
 
 . . .
 
@@ -51,30 +52,30 @@ Actualmente trabajo en la División Sistemas de Información Geoespacial - AFIP
 # Hoja de ruta 🚀 {background-color="#C5E1A5"}
 
 ::: {.fragment .semi-fade-out}
--   **Clase 1**: ¿Qué es la ciencia de datos? Conceptos importantes. Clasificación vs. Regresión. Análisis exploratorio y curación. Ingeniería de features.Entrenamiento, evaluación y testeo. Ejercitación
+-   **Clase 1**: Introducción a la ciencia de datos. Conceptos importantes. Clasificación vs regresión. Tipos de clasificaciones. ¿Qué es la IA?. Análisis exploratorio de datos.
 :::
 
 ::: {.fragment .fade-in}
 ::: {.fragment .semi-fade-out}
--   **Clase 2**: Árboles de decisión. Ensambles. Sobreajuste. Trade off Sesgo-Varianza. Naïve Bayes. Hiperparámetros. Ejercitación
-:::
-:::
-
-::: {.fragment .fade-in}
-::: {.fragment .semi-fade-out}
--   **Clase 3**: Validación cruzada. Métricas. Selección de modelos. Desbalanceo de clases. Problemas multiclase. Ejercitación
+-   **Clase 2**: Modelos de clasificación supervisada. Árboles de decisión y ensambles para la detección de fraudes/anomalias. Series de tiempo. Ejercitación.
 :::
 :::
 
 ::: {.fragment .fade-in}
 ::: {.fragment .semi-fade-out}
--   **Clase 4**: Series Temporales. Ejercitación
+-   **Clase 3**: Clasificación no supervisada. Segmentación de clientes. PCA, KNN, Kmeans. Ejercitación.
 :::
 :::
 
 ::: {.fragment .fade-in}
 ::: {.fragment .semi-fade-out}
--   **Clase 5**: Clustering. K-means. PCA. Clustering en series temporales. Ejercitación
+-   **Clase 4**: Introducción a Computer Vision y Procesamiento del Lenguaje Natural. Usos y aplicaciones. Contexto histórico de los LLM.
+:::
+:::
+
+::: {.fragment .fade-in}
+::: {.fragment .semi-fade-out}
+-   **Clase 5**: Optimización de los prompts en ChatGPT. Cuestiones éticas a tener en cuenta
 :::
 :::
 
@@ -91,7 +92,7 @@ Actualmente trabajo en la División Sistemas de Información Geoespacial - AFIP
 
 . . .
 
-[**Recreo**]{style="color: #ae260e;"} `r emo::ji("coffee")`🧉
+[**Recreo**]{style="color: #ae260e;"} 🧉
 
 . . .
 
@@ -138,7 +139,7 @@ Imagen extraída de [aquí](https://hardzone.es/tutoriales/rendimiento/diferenci
 
 ![](img/prediction.png){fig-align="center"}
 
-## Ejemplos en negocios `r emo::ji("dollar")`
+## Ejemplos en negocios 
 
 ::: {layout="[[1,1], [1,1]]"}
 ![Detectar la probabilidad de que la transacción sea un fraude (Fraud Detection Models)](img/cards.png)
@@ -148,19 +149,15 @@ Imagen extraída de [aquí](https://hardzone.es/tutoriales/rendimiento/diferenci
 ![Probabilidad de que un usuario cliquee un anuncio (Click Prediction Models)](img/logos.jpg)
 :::
 
-
-
-## Imágenes satelitales `r emo::ji("world")`
+## Imágenes satelitales 
 
 ::: columns
 ::: {.column width="25%"}
-
 ![](https://previews.123rf.com/images/madmaxer/madmaxer1606/madmaxer160600165/59208934-3d-ilustraci%C3%B3n-de-sat%C3%A9lite-de-navegaci%C3%B3n-sobre-el-fondo-blanco.jpg)
 :::
+
 ::: {.column width="75%"}
-
 ![](https://www.bcr.com.ar/sites/default/files/styles/free/public/mapa_caseros.png?itok=vYfFTRPj)
-
 :::
 :::
 
@@ -173,7 +170,7 @@ Imagen extraída de [aquí](https://hardzone.es/tutoriales/rendimiento/diferenci
 
 -   [**Aprendizaje semi-supervisado**]{style="color: #88188a;"}: Datos de entrenamiento + pocas salida esperadas
 
--   [**Aprendizaje auto-supervisado**]{style="color: #88188a;"}: Datos de entrenamiento auto generados (tareas pretexto).  Es una técnica de aprendizaje relativamente reciente donde los datos de entrenamiento se etiquetan de forma autónoma. Ej: Dada una oración de entrada, la tarea consiste en predecir una palabra que falta en esa oración, que se omite específicamente con el propósito de construir una tarea de pretexto.
+-   [**Aprendizaje auto-supervisado**]{style="color: #88188a;"}: Datos de entrenamiento auto generados (tareas pretexto). Es una técnica de aprendizaje relativamente reciente donde los datos de entrenamiento se etiquetan de forma autónoma. Ej: Dada una oración de entrada, la tarea consiste en predecir una palabra que falta en esa oración, que se omite específicamente con el propósito de construir una tarea de pretexto.
 
 -   [**Aprendizaje por refuerzo**]{style="color: #88188a;"}: Recompensar los comportamientos deseados y penalizar los no deseados. Un agente es capaz de aprender a través de prueba y error en un ambiente dinámico e incierto, y mapear situaciones de acciones para maximizar una cierta función de recompensa.
 :::
@@ -182,7 +179,7 @@ Imagen extraída de [aquí](https://hardzone.es/tutoriales/rendimiento/diferenci
 
 ![](img/ml.png){fig-align="center"}
 
-## Conceptos Importantes `r emo::ji("bulb")`
+## Conceptos Importantes 
 
 -   [**Muestra, punto, observación, instancia**]{style="color: #1c5253;"} se refiere a una unidad de análisis.
 
@@ -262,7 +259,7 @@ Analisis de sentimientos de noticias financieras (negativo/positivo)
 -   Análisis de la correlación entre variables
 :::
 
-## Curación de datos `r emo::ji("hammer")`
+## Curación de datos 
 
 ::: incremental
 -   Imputación de datos ruidosos, faltantes o erróneos.
@@ -319,7 +316,7 @@ Pero antes veamos con qué tipo de archivos vamos a trabajar...
 Foto de <a href="https://unsplash.com/@emilep?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Emile Perron</a> en <a href="https://unsplash.com/es?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
 :::
 
-## <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTssVlaNiuWLk-pnFtRrlr9-1QAYHEFQUo4XKxfimK6LK2lp_MWgdqy2nzCgZOXOCPMUmA&usqp=CAU" style="display: inline-block; margin: 0; margin-bottom: -2px; height: 45px;"/></img> Archivos .Rmd
+## <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTssVlaNiuWLk-pnFtRrlr9-1QAYHEFQUo4XKxfimK6LK2lp_MWgdqy2nzCgZOXOCPMUmA&amp;usqp=CAU" style="display: inline-block; margin: 0; margin-bottom: -2px; height: 45px;"/></img> Archivos .Rmd
 
 > Un archivo .Rmd permiten unificar bloques de códigos o *chunks* con texto plano o con formato simple de leer usando [[markdown](https://markdown.es/sintaxis-markdown/)]{style="text-decoration: underline;"}. Al poder intercalar cálculos y gráficos con su análisis o explicación, se unifica el flujo de trabajo. Esto es muy importante si buscamos que nuestro trabajo sea **reproducible**, pero además ahorra tiempo 🎉
 
