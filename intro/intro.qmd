@@ -34,7 +34,6 @@ Formación: Lic. y Dra en Cs Biológicas
 
 . . .
 
-
 Área de Desarrollos y Soluciones Ambientales de la Comisión Nacional de Actividades Espaciales (CONAE)
 
 . . .
@@ -139,7 +138,7 @@ Imagen extraída de [aquí](https://hardzone.es/tutoriales/rendimiento/diferenci
 
 ![](img/prediction.png){fig-align="center"}
 
-## Ejemplos en negocios 
+## Ejemplos en negocios
 
 ::: {layout="[[1,1], [1,1]]"}
 ![Detectar la probabilidad de que la transacción sea un fraude (Fraud Detection Models)](img/cards.png)
@@ -149,7 +148,7 @@ Imagen extraída de [aquí](https://hardzone.es/tutoriales/rendimiento/diferenci
 ![Probabilidad de que un usuario cliquee un anuncio (Click Prediction Models)](img/logos.jpg)
 :::
 
-## Imágenes satelitales 
+## Imágenes satelitales
 
 ::: columns
 ::: {.column width="25%"}
@@ -179,7 +178,7 @@ Imagen extraída de [aquí](https://hardzone.es/tutoriales/rendimiento/diferenci
 
 ![](img/ml.png){fig-align="center"}
 
-## Conceptos Importantes 
+## Conceptos Importantes
 
 -   [**Muestra, punto, observación, instancia**]{style="color: #1c5253;"} se refiere a una unidad de análisis.
 
@@ -259,7 +258,7 @@ Analisis de sentimientos de noticias financieras (negativo/positivo)
 -   Análisis de la correlación entre variables
 :::
 
-## Curación de datos 
+## Curación de datos
 
 ::: incremental
 -   Imputación de datos ruidosos, faltantes o erróneos.

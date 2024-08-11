@@ -19,6 +19,16 @@ Para agregar un bloque de código `Ctrl+ Alt+ I`
 
 Para agregar el _pipe_ (` |> `) `Ctrl+ Shift+ M`
 
+## tipos de transacciones fraudulentas
+
+- Seguros
+- Tarjetas de crédito
+- Robo de identidad
+- Lavado de dinero
+- Evasiòn de impuestos
+
+El desafio en la detección del fraude es que suelen ser casos que ocurren en bajo porcentaje comparado con las transacciones normales. 
+
 ## Detección del Fraude
 
 A lo largo de las clases se trabajará con un dataset extraído de [Kaggle](https://www.kaggle.com/datasets/ealaxi/banksim1?select=bs140513_032310.csv)
