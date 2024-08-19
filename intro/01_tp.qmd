@@ -81,7 +81,7 @@ glimpse(data)
 boxplot(data$amount)
 ```
 
-Diferenciando por si fue una transacción fraudulenta o no. ¿Hay diferencias entre ambas transacciones? ¿Qué información brindan los boxplots?
+Si se diferencia por si la transacción fue fraudulenta o no, ¿Hay diferencias entre ambas transacciones? ¿Qué información brindan los boxplots?
 
 ```{r}
 boxplot(amount~fraud,
@@ -116,9 +116,11 @@ Actividad:
 ```{r}
 data$fraud <- as.factor(data$fraud)
 
-ggplot(data, aes(x = age, fill = fraud)) +
+fraudes <- data %>% filter(fraud== 1)
+
+ggplot(fraudes, aes(x = age)) +
   geom_bar(binwidth = 5, position = "identity", alpha = 0.5) +
-  labs(title = "Histogramas de Edad diferenciados por Sexo",
+  labs(title = "Histograma de la edad de aquellas personas que cometieron fraudes",
        x = "Edad",
        y = "Frecuencia") +
   theme_minimal()
