@@ -7,7 +7,7 @@ title-slide-attributes:
     data-background-image: "img/portada.jpg"
 format: 
   revealjs:
-    theme: [mytheme.scss]
+    theme: ["default", mytheme.scss]
     slide-number: c
     incremental: false
     width: 1600
@@ -23,10 +23,6 @@ editor: visual
 ---
 
 # Sobre Mi {.center .center-x background-color="#1c5253"}
-
-. . .
-
-![](img/pairo.png){.fragment width="250" fig-align="center"}
 
 . . .
 
@@ -117,7 +113,7 @@ Bizzer y como freelancer
 
 ::: {.column width="50%"}
 ::: incremental
--   [**IA (Inteligencia Artificial)**]{style="color: #88188a;"}: una máquina que es capaz de imitar el razonamiento humano.
+-   [**IA (Inteligencia Artificial)**]{style="color: #88188a;"}: Disciplina científica que se ocupa de crear programas informáticos que ejecutan operaciones comparables a las que realiza la mente humana, como el aprendizaje o el razonamiento lógico.
 
 -   [**ML (Machine Learning)**]{style="color: #88188a;"}: un subconjunto de Inteligencia Artificial donde las personas "entrenan" a las máquinas para reconocer patrones basados en datos y hacer sus **predicciones**.
 
@@ -382,7 +378,7 @@ Imagen realizada por Tom Mock
 :::
 
 ::: {.column width="50%"}
-![[18 al 20 de octubre de 2023, Presencial](https://latin-r.com/) Talleres y presentaciones orales.](img/latinr.jpg){width="60%"}
+![[18 al 22 de noviembre de 2024, Online](https://latinr.org/) Talleres y presentaciones orales.](img/latinr.jpg){width="60%"}
 :::
 :::
 
