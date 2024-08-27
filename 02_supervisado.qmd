@@ -43,7 +43,8 @@ editor: visual
 
 . . .
 
--   Series Temporales
+-   Descomposición de series temporales
+-   Modelado de series temporales
 -   Ejercitación
 
 ## Ejemplos de clasificación supervisada
@@ -88,6 +89,11 @@ Recordemos...
 :::
 :::
 :::
+
+.  .  .
+
+[**¿Qué algotirmos se suelen utilizar?**]{style="color: #88188a;"}
+
 
 ##  {background-color="#C5E1A5"}
 
