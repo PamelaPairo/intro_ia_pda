@@ -3,7 +3,7 @@ title: "Aprendizaje Supervisado"
 author: "Pamela E. Pairo"
 lang: es
 description: |
-  Trabajo Práctico n°2
+  Trabajo Práctico n°3
 format:
   html:
     theme: flatly
@@ -15,7 +15,7 @@ format:
 
 ## Detección del Fraude
 
-A lo largo de las clases se trabajará con un dataset extraído de [Kaggle](https://www.kaggle.com/datasets/ealaxi/banksim1?select=bs140513_032310.csv)
+Carga de las librerias necesarias
 
 ```{r, message=FALSE}
 # Carga de paquetes necesarios
@@ -29,9 +29,11 @@ library(workflows)
 ```
 
 ```{r}
-data <- read_csv('C:/Users/Pame/Desktop/intro_ia_pda/data/df_fraude.csv') %>% 
-        sample_n(15000)
-glimpse(data)
+set.seed(14)
+
+df <- read_csv('C:/Users/Pame/Desktop/intro_ia_pda/data/df_fraude.csv') %>% 
+        sample_n(15000) %>% 
+        select ("gender", "amount", "fraud", "category", "age")
 ```
 
 ### Descripción de las variables
@@ -62,20 +64,7 @@ glimpse(data)
 
 `zipcodeOri` y `zipMerchant`: contienen un valor constante de 28007, que es un código postal en Ansonville, Carolina del Norte, Estados Unidos.
 
-## Conociendo `tidymodels`
-
-```{r}
-df <- data |> 
-      select ("gender", "amount", "fraud", "category", "age")
-```
-
-¿Qué tipo de variable es cada *feature*?
-
-```{r}
-glimpse(df)
-```
-
-Cambiemos el tipo de variable según corresponda
+## EDA
 
 ```{r}
 df$fraud <- as.factor(df$fraud)
@@ -86,13 +75,11 @@ df$category <- as.factor(df$category)
 glimpse (df)
 ```
 
-¿Cuántos casos corresponden a transacciones fraudulentas y no fraudulentas?
+Para una correcta interpretación de nuestros resultados vamos a especificar que `1` es nuestra clase positiva (cliente quiere contratar un seguro)
 
 ```{r}
-df %>%
-  group_by(fraud) %>%
-  summarise(cnt = n()) %>%
-  mutate(freq = round(cnt / sum(cnt), 2))
+df$fraud <- relevel(df$fraud, ref = "1")
+levels(df$fraud)
 ```
 
 ## División del dataset: Entrenamiento y testeo
@@ -101,17 +88,17 @@ df %>%
 
 ```{r}
 set.seed(456)#setear la semilla
-
+# Create data split for train and test
 df_split <- initial_split(df,
-                          prop = 0.8,
-                          strata = fraud)
-# Dataset de entrenamiento
+                          prop = 0.7,
+                          strata = fraud)# para conservar la proporción de clases
+# Create training data
 df_train <- df_split %>%
               training()
-# Dataset de testeo
+# Create testing data
 df_test <- df_split %>%
               testing()
-# Número de filas para cada set
+# Number of rows in train and test dataset
 paste0("Total del dataset de entrenamiento: ", nrow(df_train))
 paste0("Total del dataset de testeo: ", nrow(df_test))
 ```
@@ -136,11 +123,12 @@ Al igual que `tidyverse`, `tidymodels` está compuesto por un conjunto de paquet
 
 Mayores especificaciones y ejemplos de uso de `tidymodels`, en su [página](https://www.tidymodels.org/packages/)
 
+
 ## Preprocesamiento de datos usando `recipe`
 
 ```{r}
 recipe_df <-  recipe (fraud ~ ., data= df_train) |>  
-              step_scale(all_numeric_predictors(), -all_outcomes()) |> 
+              step_scale(all_numeric_predictors()) |> 
               step_dummy(all_nominal_predictors())
               
 # Bake
@@ -162,62 +150,160 @@ Se puede entrenar cualquier modelo (que este incluído en `tidymodels`) siguiend
 
 4- Usar la función `fit ()` para entrenar el modelo y, dentro de eso, debe proporcionar la notación de la fórmula y el conjunto de datos
 
+# Random Forest con CV
+
+Con `tune`, se especifica qué hiperparámetros van a ser tuneados.
+
 ```{r}
-##Con los hiperparámetros por default
-
-#Arboles de decisión
+#Random forest con validacion cruzada
 set.seed(234)
-model_TREE <- decision_tree() |> 
-  set_engine("rpart") |>  
-  set_mode("classification")
-
-#Random Forest
-set.seed(234)
-model_RF <- rand_forest() |>  
-  set_engine("ranger") |>  
-  set_mode("classification") |>  
-  set_args(trees = 100)
+model_RF <- rand_forest(mtry = tune(), 
+                         min_n = tune(),
+                         trees = 50) %>%    
+             set_mode("classification")
 ```
-
-# Árboles de decisión
 
 ## Uniendo todo en un *Workflow*
 
 ```{r}
-wf_TREE <- workflow() %>% 
-          add_recipe(recipe_df) %>% 
-          add_model(model_TREE)
-wf_TREE
+wf_RF <- workflow() |>  
+          add_recipe(recipe_df) |> 
+          add_model(model_RF)
+wf_RF
 ```
 
-## Entreno el modelo
+## Cross-validation
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/cross.png){fig-align="center"}
 
 ```{r}
-TREE_fit <- model_TREE%>%
-  fit(fraud ~ ., data = df_train) 
-#imprimo el modelo
-TREE_fit
+set.seed(1234)
+fold_df <- vfold_cv(df_train, v=5)
+fold_df$splits
 ```
 
-Se puede crear una visualización del árbol de decisión utilizando otra función auxiliar.
+Necesitamos un conjunto de posibles valores de parámetros para probar el árbol de decisión.
 
 ```{r}
-library(rpart.plot)# para la visualzación del árbol de decisión
-
-TREE_fit |> 
-  extract_fit_engine() |> 
-  rpart.plot(roundint = FALSE)
-
+param_grid <- grid_regular(mtry(range = c(10, 30)), 
+                           min_n(range = c(2, 8)))
+param_grid
 ```
 
-¿Qué variables fueron importantes en el entrenamiento?
+
+![](https://pbs.twimg.com/media/FD2hTDOX0AIdRti.jpg){.fragment width="500" lenght="700" fig-align="center"}
+
+Si la prioridad es predecir correctamente a los positivos --> buscamos alta sensibilidad
+
+Si se quiere identificar correctamente a los negativos --> buscamos alta especificidad
+
+```{r}
+doParallel::registerDoParallel() #paralelizamos los cálculos
+
+tune_DF <- tune_grid(
+  model_RF,
+  fraud~ .,
+  resamples = fold_df, 
+  grid = param_grid, 
+  metrics = metric_set(accuracy, roc_auc, precision)
+)
+```
+
+Las métricas provienen del rendimiento de la validación cruzada a través de los diferentes valores de los parámetros.
+
+```{r}
+collect_metrics(tune_DF)
+```
+
+```{r}
+autoplot(tune_DF)
+```
+
+## Selección del mejor modelo
+
+```{r}
+param_final <- tune_DF |> 
+  select_best(metric = "precision")
+param_final
+```
+
+
+```{r}
+wf_RF <- wf_RF |> 
+  finalize_workflow(param_final)
+wf_RF
+```
+
+# Evaluación en test
+
+A continuación, se ajusta el flujo de trabajo del modelo final a los datos de entrenamiento y se evalúa el rendimiento en los datos de testeo.
+
+La función ´last_fit()´ ajuta el flujo de trabajo a los datos de entrenamiento y generará predicciones sobre los datos de prueba según lo define nuestro objeto churn_split.
+
+```{r}
+dt_fit <- wf_RF |> 
+  # fit on the training set and evaluate on test set
+  last_fit(df_split, metrics = metric_set(precision))
+dt_fit
+```
+
+
+```{r}
+test_performance <- dt_fit |>  collect_metrics()
+test_performance
+```
+
+## Matriz de confusion
+
+```{r}
+collect_predictions(dt_fit) |> 
+  conf_mat(fraud, .pred_class)
+```
+
+```{r}
+final_RF <- extract_workflow(dt_fit)
+final_RF
+```
+
+## ¿Cuáles fueron las variables más importantes?
+
+```{r}
+best_precision <- select_best(tune_DF, metric= "precision")
+
+final_rf <- finalize_model(
+  model_RF,
+  best_precision
+)
+```
 
 ```{r}
 library(vip)
 
-TREE_fit%>%
+final_rf %>%
+  set_engine("ranger", importance = "permutation") %>%
+  fit(fraud ~ .,
+    data = df_train
+  )%>%
   vip()
 ```
-## Actividad propuesta
 
-Probar con Random Forest y comparar con los resultados obtenidos para el Àrbol de decisión.
+# Predecir un nuevo caso
+
+```{r}
+# Crear un nuevo caso de ejemplo
+nuevo_caso <- data.frame(
+  gender = "'M'",
+  amount = 600.2,
+  category= "'es_fashion'",
+  age= "'5'"
+)
+
+# Predecir con el modelo final
+prediccion <- predict(final_RF, nuevo_caso)
+
+# Ver la predicción
+prediccion
+
+```
+
+

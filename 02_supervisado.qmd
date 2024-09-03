@@ -43,9 +43,8 @@ editor: visual
 
 . . .
 
--   Descomposición de series temporales
--   Modelado de series temporales
--   Ejercitación
+-   Validación cruzada
+-   Métricas
 
 ## Ejemplos de clasificación supervisada
 
@@ -298,6 +297,10 @@ Imagen extraída de [aquí](https://datascience.eu/machine-learning/gradient-boo
 Imagen extraída de [aquí](https://towardsdatascience.com/ensemble-learning-bagging-boosting-3098079e5422)
 :::
 
+## Isolation Forest
+
+![](img/isolation.png){fig-align="center"}
+
 ##  {background-image="img/computadora.jpg" background-size="cover"}
 
 <h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:15px;line-height:2em; text-align: center; position: absolute; top: 25%; width: 56%;">
@@ -310,148 +313,120 @@ Imagen extraída de [aquí](https://towardsdatascience.com/ensemble-learning-bag
 Foto de <a href="https://unsplash.com/@emilep?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Emile Perron</a> en <a href="https://unsplash.com/es?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
 :::
 
+
 ##  {background-color="#C5E1A5"}
 
 <h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
 
-[Series Temporales]{style="font-size: 100px;"}
+[Métricas 🔢]{style="font-size: 100px;"}
 
 </h3>
 
-## ¿Qué es una serie temporal?
+## El conjunto de test
 
-> Secuencia de N observaciones (datos) ordenados y equidistantes cronologicamente sobre una característica de una unidad observable en diferentes momentos. Es decir la variable x es el tiempo
+Durante el proceso de aprendizaje, el modelo no debe acceder bajo ninguna circunstancia a los datos del conjunto de testeo, sino las estimaciones estarán sesgadas.
 
-![](https://support.minitab.com/es-mx/minitab/20/media/generated-content/images/time_scale_default_ticks.png){.fragment width="800" fig-align="center"}
+El conjunto de validación se utiliza para ajustar los hiperparámetros y luego se hace la selección de modelos.
 
-## Algunas aplicaciones
+Las métricas ayudan a capturar objetivos reales en forma cuantitativa (no todos los errores son iguales)
 
-::: incremental
-::: columns
-::: {.column width="33%"}
-**Economía**
+![](img/split_data.png){fig-align="center"}
 
--   Precio de un producto
--   Tasa de desempleo
--   Tasa de inflación
--   Precio del dólar
--   Precio de acciones
-:::
+## Matriz de Confusión
 
-::: {.column width="34%"}
-**Meteorología**
+Se quiere que los elementos diagonales tengan valores grandes y los no diagonales valores chicos
 
--   Temperatura máxima diaria
--   Velocidad del viento
--   Precipitaciones
-:::
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/confusion_matrix.png){fig-align="center"}
 
-::: {.column width="33%"}
-**Marketing**
+## Accuracy
 
--   Gastos
--   Ventas
--   Demandas
--   Ofertas
-:::
-:::
-:::
+$\LARGE Accuracy = \frac{TP + TN}{TP+TN+FP+FN}$
 
-## Tipos de análisis
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/matrix.png){fig-align="center"}
 
-![](img/st.png){.fragment width="80" fig-align="center"}
+No es adecuado cuando los datos están [**muy desbalanceados**]{style="text-decoration: underline;"} Le da mayor importancia a la clase mayoritaria.
 
-::: incremental
--   Descriptivo: ¿Cúando hay baja/alta demanda de un producto?
--   Explicativo/Inferencial: ¿A qué se debe que el producto haya aumentado/decrecido sus ventas?
--   Predictivo (*Forecasting*): Se usa el comportamiento histórico de la serie para conocer el comportamiento futuro
-:::
+## Precision
 
-> Importante el conocimiento de dominio, plantear adecuadamente el objetivo y así decidir la periodicidad de la serie
+A mas precisión menos errores de tipo I (falsos positivos)
 
-## Componentes de la serie temporal 📈
+$\LARGE Precision = \frac{TP}{TP+FP}$
 
-**Tendencia (*Trend*):** existe un aumento o disminución a largo plazo en los datos. No tiene por qué ser lineal.
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/matrix.png){fig-align="center"}
 
-![](img/trend.png){fig-align="center"}
+## Recall (Sensitividad)
 
-## Componentes de la serie temporal
+Encuentra todos los positivos. Utilizar cuando se quiere minimizar los falsos negativos.
 
-**Estacionalidad (*Seasonality*):** ocurre cuando una serie de tiempo se ve afectada por factores estacionales como la época del año o el día de la semana. La estacionalidad es siempre de un período fijo y conocido.
+$\LARGE Recall = \frac{TP}{TP+FN}$
 
-![](img/seas_trend.png){fig-align="center"}
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/matrix.png){fig-align="center"}
 
-## Componentes de la serie temporal
-
-**Cíclico:** ocurre cuando la exhibición de datos sube y baja pero no con una frecuencia fija.
-
-![](img/cycle.png){fig-align="center"}
-
-> Si las fluctuaciones no son de una frecuencia fija, entonces son cíclicas; si la frecuencia no cambia y está asociada con algún aspecto del calendario, entonces el patrón es estacional.
-
-## Descomposición: Aditiva vs Multiplicativa
-
--   Aditivo: es lineal donde los cambios a lo largo del tiempo se realizan consistentemente en la misma cantidad. Una tendencia lineal es una línea recta. Una estacionalidad lineal tiene la misma frecuencia (ancho de ciclos) y amplitud (alto de ciclos).
-
--   Multiplicativo: es no lineal, como cuadrático o exponencial. Los cambios aumentan o disminuyen con el tiempo. Una tendencia no lineal es una línea curva. Una estacionalidad no lineal tiene una frecuencia y/o amplitud creciente o decreciente a lo largo del tiempo.
-
-![](img/admul.png){fig-align="center"}
-
-## Modelos Autoregresivos - AR(p)
-
-Se pronostica la variable de interés utilizando una combinación lineal de valores pasados de la variable.
-
-El término autoregresivo describe la regresión de una variable consigo misma.
-
-$\LARGE y_t= c + \phi_1 * y_{t-1} + \phi_2 * y_{t-2} + ...\phi_p * y_{t-p} + \epsilon_t$
-
-$\phi_p$ = coeficientes de retardo
-
-$\epsilon_t$ = white noise
-
-## Modelos de media móvil - MA (q)
-
-En lugar de usar valores pasados de la variable de pronóstico en una regresión, un modelo de promedio móvil usa errores de pronóstico pasados en un modelo similar a una regresión.
-
-$\LARGE y_t= c + \epsilon_t + \theta_1 * \epsilon_{t-1} + ...\theta_q * \epsilon_{t-q}$
-
-## Diferenciación (I)
-
-Una serie es estacionaria cuando la media y la varianza son constantes a lo largo del tiempo, **es decir no tiene componente de tendencia.**
-
-> Si la serie no es estacionaria se debe indicar cuantas veces hay que diferenciarla para que los modelos AR y MA sean confiables
-
-## Autocorrelation Function y Partial Autocorrelation Function
+## 
 
 ::: columns
 ::: {.column width="50%"}
-ACF: Autocorrelacién entre la serie y una retrasada en si misma que incluye la dependecnia directa e indirecta de la información
+### F1 Score
 
-PACF: solo describe la relación directa entre la observación y la retrasada en el tiempo
+Medida armónica entre Precision y recall
+
+$\LARGE F1 = 2* \frac{precision * recall}{precision + recall}$
 :::
 
 ::: {.column width="50%"}
-![](img/acf_pacf.png){fig-align="center"}
+### Especificidad
+
+$\LARGE Especificidad = \frac{TN}{TN + FP}$
 :::
 :::
 
-## ARIMA y SARIMA
+## Curvas ROC
 
-![](img/sarima.png){.fragment width="60" fig-align="center"}
+Puedo comparar modelos
 
-## Exponential Smoothing
+AUC= área bajo la curva ROC, que también sirve para comparar modelos.
 
-Los pronósticos producidos son promedios ponderados de observaciones pasadas, con los pesos decayendo exponencialmente a medida que las observaciones envejecen. En otras palabras, cuanto más reciente es la observación, mayor es el peso asociado.
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/roc.png){fig-align="center"}
 
-Exponencial vs ARIMA: Mientras que los modelos de suavizado exponencial se basan en una descripción de la tendencia y la estacionalidad de los datos, los modelos ARIMA tienen como objetivo describir las autocorrelaciones en los datos.
+##  {background-color="#C5E1A5"}
 
-## Exponential Smoothing
+<h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
 
-**Suavizado simple**: este método es adecuado para pronosticar datos sin tendencia clara o patrón estacional. Los pronósticos se calculan utilizando promedios ponderados, donde los pesos disminuyen exponencialmente a medida que las observaciones provienen de más lejos en el pasado.
+[Validación Cruzada 🎨]{style="font-size: 100px;"}
 
-**Suavizado doble**: este método se utiliza cuando los datos muestran una tendencia constante (creciente o decreciente) indefinidamente en el futuro.
+</h3>
 
-**Suavizado triple-Método Holt Winter**: este método comprende la ecuación de pronóstico y tres ecuaciones de suavizado: una para el nivel, una para la tendencia y otra para el componente estacional, con los correspondientes parámetros de suavizado.
+## Conjunto de testeo
+
+Durante el proceso de aprendizaje, el modelo [**no debe acceder**]{style="color: #88188a;"} bajo ninguna circunstancia a los datos del conjunto de testeo, sino las estimaciones estarán sesgadas.
+
+![](img/split_data.png){fig-align="center"}
+
+. . .
+
+> El objetivo de un modelo de Machine Learning es que generalice bien frente a nuevos datos o datos no vistos por el modelo (set de testeo)
+
+## Conjunto de validación
+
+El conjunto de validación se utiliza para ajustar los hiperparámetros y luego se hace la selección de modelos.
+
+Importante para evitar el overfitting y obtener modelos estables.
+
+1- Selección de hiperparámetros
+
+2- Selección de modelos usando el conjunto de validación
+
+3- Encontrar la mejor configuración de hiperparámetros según la métrica elegida
+
+4- Evaluación final con el conjunto de testeo
+
+## Muestreo estratificado
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/estratificado.png){fig-align="center"}
+
+## Cross-validation
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/cross.png){fig-align="center"}
 
 ##  {background-image="img/computadora.jpg" background-size="cover"}
 
@@ -467,9 +442,14 @@ Foto de <a href="https://unsplash.com/@emilep?utm_source=unsplash&utm_medium=ref
 
 ## Referencias
 
--   [Introducción a las Series Temporales](https://www.ucm.es/data/cont/docs/518-2013-11-11-JAM-IAST-Libro.pdf)
+-   [20 Popular Machine Learning Metrics. Part 1: Classification & Regression Evaluation Metrics](https://towardsdatascience.com/20-popular-machine-learning-metrics-part-1-classification-regression-evaluation-metrics-1ca3e282a2ce)
 
--   [Forecasting: Principles and Practice](https://otexts.com/fpp2/)
+-   [Aprendizaje Automático y las Métricas de Regresión](https://sitiobigdata.com/2018/08/27/machine-learning-metricas-regresion-mse/#)
+
+-   [3 best metrics to evaluate regresion models?](https://towardsdatascience.com/what-are-the-best-metrics-to-evaluate-your-regression-model-418ca481755b)
+
+-   [Curvas ROC-AUC](https://mlu-explain.github.io/roc-auc/)
+
 
 -   [Applied Machine Learning](https://rstudio-conf-2020.github.io/applied-ml/Part_6.html#1) dictado en rstudio::conf 2020
 

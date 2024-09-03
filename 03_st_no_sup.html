@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="02_supervisado_files/libs/clipboard/clipboard.min.js"></script>
-<script src="02_supervisado_files/libs/quarto-html/tabby.min.js"></script>
-<script src="02_supervisado_files/libs/quarto-html/popper.min.js"></script>
-<script src="02_supervisado_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="02_supervisado_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="02_supervisado_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="02_supervisado_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="02_supervisado_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="03_st_no_sup_files/libs/clipboard/clipboard.min.js"></script>
+<script src="03_st_no_sup_files/libs/quarto-html/tabby.min.js"></script>
+<script src="03_st_no_sup_files/libs/quarto-html/popper.min.js"></script>
+<script src="03_st_no_sup_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="03_st_no_sup_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="03_st_no_sup_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="03_st_no_sup_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="03_st_no_sup_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.55">
 
   <meta name="author" content="Pamela E. Pairo">
   <meta name="author" content="Posgrado Digital Accounting">
-  <title>Clase 2: Aprendizaje Supervisado</title>
+  <title>Clase 3: Aprendizaje Supervisado</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="02_supervisado_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="02_supervisado_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="03_st_no_sup_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="03_st_no_sup_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -31,13 +31,13 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="02_supervisado_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="02_supervisado_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="02_supervisado_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="02_supervisado_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="02_supervisado_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="02_supervisado_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="02_supervisado_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="03_st_no_sup_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="03_st_no_sup_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="03_st_no_sup_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="03_st_no_sup_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="03_st_no_sup_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="03_st_no_sup_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="03_st_no_sup_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -329,7 +329,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="img/portada.jpg" class="quarto-title-block center">
-  <h1 class="title">Clase 2: Aprendizaje Supervisado</h1>
+  <h1 class="title">Clase 3: Aprendizaje Supervisado</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -345,369 +345,140 @@ Posgrado Digital Accounting
 </div>
 
 </section>
-<section id="en-la-clase-de-hoy" class="slide level2">
-<h2>En la clase de hoy…</h2>
-<p><span style="color: #ae260e;"><strong>En la primera parte:</strong></span></p>
-<div class="fragment">
-<ul>
-<li>Casos de uso de ML: Riesgo crediticio y Detección de Fraude</li>
-<li>Árboles de decisión</li>
-<li>Ensambles: Bagging y Boosting</li>
-<li>Ejercitación</li>
-</ul>
-</div>
-<div class="fragment">
-<p><span style="color: #ae260e;"><strong>Recreo</strong></span> ☕🧉</p>
-</div>
-<div class="fragment">
-<p><span style="color: #ae260e;"><strong>En la segunda parte:</strong></span></p>
-</div>
-<div class="fragment">
-<ul>
-<li>Validación cruzada</li>
-<li>Métricas</li>
-</ul>
-</div>
-</section>
-<section id="ejemplos-de-clasificación-supervisada" class="slide level2">
-<h2>Ejemplos de clasificación supervisada</h2>
-<p>Recordemos…</p>
-<ul>
-<li><span style="color: #88188a;"><strong>Aprendizaje supervisado</strong></span>: Datos de entrenamiento + salida esperada</li>
-</ul>
-<div class="fragment">
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="https://appinventiv.com/wp-content/uploads/2021/12/How-Machine-Learning-Helps-in-Financial-Fraud-Detection-in-the-FinTech-Industry_Info-1-10-2048x1330.webp" class="fragment quarto-figure quarto-figure-center" width="950"></p>
-</figure>
-</div>
-</div><div class="column" style="width:50%;">
-<div>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="https://www.solulab.com/wp-content/uploads/2024/05/Types-of-Credit-Risk.jpg" class="fragment quarto-figure quarto-figure-center" width="950"></p>
-</figure>
-</div>
-</div>
-</div></div>
-</div>
-</section>
-<section id="ventajas-de-usar-machine-learning" class="slide level2">
-<h2>Ventajas de usar Machine Learning</h2>
-<div class="columns">
-<div class="column" style="width:60%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/ventajas.png" class="fragment quarto-figure quarto-figure-center" width="1000"></p>
-</figure>
-</div>
-</div><div class="column" style="width:40%;">
-<div>
-<ul>
-<li class="fragment"><p>Identificación rápida y precisa de comportamientos sospechosos.</p></li>
-<li class="fragment"><p>Procesamiento de grandes cantidades de datos en poco tiempo.</p></li>
-<li class="fragment"><p>Automatización de tareas repetitivas lo cual reduce tiempo y costos y por ende los procesos son mas eficientes.</p></li>
-</ul>
-</div>
-</div></div>
-<div class="fragment">
-<p><span style="color: #88188a;"><strong>¿Qué algotirmos se suelen utilizar?</strong></span></p>
-</div>
-</section>
 <section id="section" class="slide level2" data-background-color="#C5E1A5">
 <h2></h2>
 <h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
-<p><span style="font-size: 100px;">Árboles de decisión 🌲</span></p>
+<p><span style="font-size: 100px;">Series Temporales</span></p>
 </h3>
 </section>
-<section id="árboles-de-decisión" class="slide level2" data-chalkboard-buttons="true">
-<h2>Árboles de decisión</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="https://raw.githubusercontent.com/PamelaPairo/maestria_DM/main/aprendizaje_automatico/images/arbol.png" class="fragment quarto-figure quarto-figure-center" width="850"></p>
-</figure>
-</div>
-</div><div class="column" style="width:50%;">
+<section id="qué-es-una-serie-temporal" class="slide level2">
+<h2>¿Qué es una serie temporal?</h2>
+<blockquote>
+<p>Secuencia de N observaciones (datos) ordenados y equidistantes cronologicamente sobre una característica de una unidad observable en diferentes momentos. Es decir la variable x es el tiempo</p>
+</blockquote>
+
+<img data-src="https://support.minitab.com/es-mx/minitab/20/media/generated-content/images/time_scale_default_ticks.png" class="fragment quarto-figure quarto-figure-center r-stretch" width="800"></section>
+<section id="algunas-aplicaciones" class="slide level2">
+<h2>Algunas aplicaciones</h2>
 <div>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><strong>Economía</strong></p>
 <ul>
-<li class="fragment"><p>Aprende a diferenciar los datos en base a <span style="color: #88188a;"><strong>reglas de decisión</strong></span>.</p></li>
-<li class="fragment"><p>Funcionan bien para datos no linealmente separables.</p></li>
-<li class="fragment"><p>Cada nodo interno compara un atributo xi</p></li>
-<li class="fragment"><p>Una rama por cada valor de atributo xi=v</p></li>
-<li class="fragment"><p>Cada hoja asigna una clase y</p></li>
-<li class="fragment"><p>¡Modelo interpretable!</p></li>
+<li class="fragment">Precio de un producto</li>
+<li class="fragment">Tasa de desempleo</li>
+<li class="fragment">Tasa de inflación</li>
+<li class="fragment">Precio del dólar</li>
+<li class="fragment">Precio de acciones</li>
+</ul>
+</div><div class="column" style="width:34%;">
+<p><strong>Meteorología</strong></p>
+<ul>
+<li class="fragment">Temperatura máxima diaria</li>
+<li class="fragment">Velocidad del viento</li>
+<li class="fragment">Precipitaciones</li>
+</ul>
+</div><div class="column" style="width:33%;">
+<p><strong>Marketing</strong></p>
+<ul>
+<li class="fragment">Gastos</li>
+<li class="fragment">Ventas</li>
+<li class="fragment">Demandas</li>
+<li class="fragment">Ofertas</li>
+</ul>
+</div></div>
+</div>
+</section>
+<section id="tipos-de-análisis" class="slide level2">
+<h2>Tipos de análisis</h2>
+
+<img data-src="img/st.png" class="fragment quarto-figure quarto-figure-center r-stretch" width="80"><div>
+<ul>
+<li class="fragment">Descriptivo: ¿Cúando hay baja/alta demanda de un producto?</li>
+<li class="fragment">Explicativo/Inferencial: ¿A qué se debe que el producto haya aumentado/decrecido sus ventas?</li>
+<li class="fragment">Predictivo (<em>Forecasting</em>): Se usa el comportamiento histórico de la serie para conocer el comportamiento futuro</li>
 </ul>
 </div>
-</div></div>
+<blockquote>
+<p>Importante el conocimiento de dominio, plantear adecuadamente el objetivo y así decidir la periodicidad de la serie</p>
+</blockquote>
 </section>
-<section id="con-qué-atributo-comenzar" class="slide level2">
-<h2>¿Con qué atributo comenzar?</h2>
+<section id="componentes-de-la-serie-temporal" class="slide level2">
+<h2>Componentes de la serie temporal 📈</h2>
+<p><strong>Tendencia (<em>Trend</em>):</strong> existe un aumento o disminución a largo plazo en los datos. No tiene por qué ser lineal.</p>
 
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/maestria_DM/main/aprendizaje_automatico/images/arbol2.png" class="quarto-figure quarto-figure-center r-stretch"><blockquote>
-<p>Una partición es buena si estamos “más seguros” de la clasificación después de haberla realizado</p>
+<img data-src="img/trend.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="componentes-de-la-serie-temporal-1" class="slide level2">
+<h2>Componentes de la serie temporal</h2>
+<p><strong>Estacionalidad (<em>Seasonality</em>):</strong> ocurre cuando una serie de tiempo se ve afectada por factores estacionales como la época del año o el día de la semana. La estacionalidad es siempre de un período fijo y conocido.</p>
+
+<img data-src="img/seas_trend.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="componentes-de-la-serie-temporal-2" class="slide level2">
+<h2>Componentes de la serie temporal</h2>
+<p><strong>Cíclico:</strong> ocurre cuando la exhibición de datos sube y baja pero no con una frecuencia fija.</p>
+
+<img data-src="img/cycle.png" class="quarto-figure quarto-figure-center r-stretch"><blockquote>
+<p>Si las fluctuaciones no son de una frecuencia fija, entonces son cíclicas; si la frecuencia no cambia y está asociada con algún aspecto del calendario, entonces el patrón es estacional.</p>
 </blockquote>
 </section>
-<section id="qué-atributo-es-el-mejor" class="slide level2">
-<h2>¿Qué atributo es el mejor?</h2>
-<p><span style="color: #88188a;"><strong>Entropía</strong></span></p>
-<p>Medida de incertidumbre de una variable aleatoria</p>
-<p><span class="math inline">\(\LARGE H(Y) = -\sum_{i=1}^{k}p(Y=y_i)log_2 p(Y=y_i)\)</span></p>
-<div class="fragment">
-<div style="text-align: center;">
+<section id="descomposición-aditiva-vs-multiplicativa" class="slide level2">
+<h2>Descomposición: Aditiva vs Multiplicativa</h2>
+<ul>
+<li><p>Aditivo: es lineal donde los cambios a lo largo del tiempo se realizan consistentemente en la misma cantidad. Una tendencia lineal es una línea recta. Una estacionalidad lineal tiene la misma frecuencia (ancho de ciclos) y amplitud (alto de ciclos).</p></li>
+<li><p>Multiplicativo: es no lineal, como cuadrático o exponencial. Los cambios aumentan o disminuyen con el tiempo. Una tendencia no lineal es una línea curva. Una estacionalidad no lineal tiene una frecuencia y/o amplitud creciente o decreciente a lo largo del tiempo.</p></li>
+</ul>
+
+<img data-src="img/admul.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="modelos-autoregresivos---arp" class="slide level2">
+<h2>Modelos Autoregresivos - AR(p)</h2>
+<p>Se pronostica la variable de interés utilizando una combinación lineal de valores pasados de la variable.</p>
+<p>El término autoregresivo describe la regresión de una variable consigo misma.</p>
+<p><span class="math inline">\(\LARGE y_t= c + \phi_1 * y_{t-1} + \phi_2 * y_{t-2} + ...\phi_p * y_{t-p} + \epsilon_t\)</span></p>
+<p><span class="math inline">\(\phi_p\)</span> = coeficientes de retardo</p>
+<p><span class="math inline">\(\epsilon_t\)</span> = white noise</p>
+</section>
+<section id="modelos-de-media-móvil---ma-q" class="slide level2">
+<h2>Modelos de media móvil - MA (q)</h2>
+<p>En lugar de usar valores pasados de la variable de pronóstico en una regresión, un modelo de promedio móvil usa errores de pronóstico pasados en un modelo similar a una regresión.</p>
+<p><span class="math inline">\(\LARGE y_t= c + \epsilon_t + \theta_1 * \epsilon_{t-1} + ...\theta_q * \epsilon_{t-q}\)</span></p>
+</section>
+<section id="diferenciación-i" class="slide level2">
+<h2>Diferenciación (I)</h2>
+<p>Una serie es estacionaria cuando la media y la varianza son constantes a lo largo del tiempo, <strong>es decir no tiene componente de tendencia.</strong></p>
 <blockquote>
-<p><strong>A mayor incertidumbre, mayor entropía</strong></p>
+<p>Si la serie no es estacionaria se debe indicar cuantas veces hay que diferenciarla para que los modelos AR y MA sean confiables</p>
 </blockquote>
-</div>
-</div>
-<div class="fragment">
-<p><span style="color: #88188a;"><strong>Entropía Condicional</strong></span></p>
-<p><span class="math inline">\(H(Y|X) = -\sum_{j=1}^{v}p(X=x_j)\sum_{i=1}^{k}p(Y=y_i|X=x_j)log_2 p(Y=y_i| X=x_j)\)</span></p>
-</div>
 </section>
-<section id="qué-atributo-es-el-mejor-1" class="slide level2">
-<h2>¿Qué atributo es el mejor?</h2>
-<p><span style="color: #88188a;"><strong>Ganancia de Información</strong></span></p>
-<p>Decrecimiento de entropía (incertidumbre) luego de la partición</p>
-<div style="text-align: center;">
-<p><span class="math inline">\(\LARGE IG(X)= H(Y)- H(Y|X)\)</span></p>
-<blockquote>
-<p><span style="font-size: 55px;"><strong>Elijo el atributo que me de mayor ganancia de información</strong></span></p>
-</blockquote>
-</div>
-</section>
-<section id="aprendizaje-en-árboles-de-decisión" class="slide level2">
-<h2>Aprendizaje en Árboles de decisión</h2>
+<section id="autocorrelation-function-y-partial-autocorrelation-function" class="slide level2">
+<h2>Autocorrelation Function y Partial Autocorrelation Function</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/iris.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
+<p>ACF: Autocorrelacién entre la serie y una retrasada en si misma que incluye la dependecnia directa e indirecta de la información</p>
+<p>PACF: solo describe la relación directa entre la observación y la retrasada en el tiempo</p>
 </div><div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/iris_plot.png" class="quarto-figure quarto-figure-center"></p>
+<p><img data-src="img/acf_pacf.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div></div>
-<div>
-<ul>
-<li class="fragment"><p>Comenzar con un árbol vacío</p></li>
-<li class="fragment"><p>Generar una partición usando siguiente mejor atributo</p></li>
-<li class="fragment"><p>Usar, por ejemplo, ganancia de información y realizar el paso anterior de manera recursiva</p></li>
-</ul>
-</div>
 </section>
-<section id="hasta-cuando-dejo-de-partir-un-nodo" class="slide level2">
-<h2>¿Hasta cuando dejo de “partir” un nodo?</h2>
-<blockquote>
-<p><span style="color: #88188a;"><strong>Hiperparámetro</strong></span>: Valores no aprendidos por el algoritmo desde los datos y por ende deben ser seteados antes de entrenar el algoritmo.</p>
-</blockquote>
-<h3 id="en-árboles-de-decisión">En árboles de decisión:</h3>
-<p><code>n_min</code> : n mínimo para dividir los nodos</p>
-<p><code>tree_depth</code>: límite a la profundidad del árbol</p>
-<p><code>cost_complexity</code>: costo o penalización a los errores de árboles más complejos. Es una forma de poda.</p>
-</section>
-<section id="sobreajuste" class="slide level2">
-<h2>Sobreajuste</h2>
-<ul>
-<li><p>El error de entrenamiento es siempre cero</p></li>
-<li><p>Poca capacidad de generalización.</p></li>
-</ul>
+<section id="arima-y-sarima" class="slide level2">
+<h2>ARIMA y SARIMA</h2>
 
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/maestria_DM/main/aprendizaje_automatico/images/overfitting.png" class="quarto-figure quarto-figure-center r-stretch"><blockquote>
-<p><span style="font-size: 55px; padding:15px">El objetivo de un modelo de Machine Learning es que generalice bien frente a nuevos datos o datos no vistos por el modelo (set de testeo)</span></p>
-</blockquote>
-<div class="footer">
-<p>Imagen extraída de <a href="https://bookdown.org/content/2031/arboles-de-decision-parte-i.html">aquí</a></p>
-</div>
+<img data-src="img/sarima.png" class="fragment quarto-figure quarto-figure-center r-stretch" width="60"></section>
+<section id="exponential-smoothing" class="slide level2">
+<h2>Exponential Smoothing</h2>
+<p>Los pronósticos producidos son promedios ponderados de observaciones pasadas, con los pesos decayendo exponencialmente a medida que las observaciones envejecen. En otras palabras, cuanto más reciente es la observación, mayor es el peso asociado.</p>
+<p>Exponencial vs ARIMA: Mientras que los modelos de suavizado exponencial se basan en una descripción de la tendencia y la estacionalidad de los datos, los modelos ARIMA tienen como objetivo describir las autocorrelaciones en los datos.</p>
 </section>
-<section id="sesgo-y-varianza" class="slide level2">
-<h2>Sesgo y varianza</h2>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/sesgo.png" class="quarto-figure quarto-figure-center r-stretch"><p>El sesgo (o bias) es la diferencia entre el valor medio predicho por el modelo y el valor medio real.</p>
-<p>La varianza se puede relacionar con la complejidad de los modelos. A medida que aumenta la complejidad, aumentan las posibilidades de sobreajuste, es decir, la varianza aumenta.</p>
+<section id="exponential-smoothing-1" class="slide level2">
+<h2>Exponential Smoothing</h2>
+<p><strong>Suavizado simple</strong>: este método es adecuado para pronosticar datos sin tendencia clara o patrón estacional. Los pronósticos se calculan utilizando promedios ponderados, donde los pesos disminuyen exponencialmente a medida que las observaciones provienen de más lejos en el pasado.</p>
+<p><strong>Suavizado doble</strong>: este método se utiliza cuando los datos muestran una tendencia constante (creciente o decreciente) indefinidamente en el futuro.</p>
+<p><strong>Suavizado triple-Método Holt Winter</strong>: este método comprende la ecuación de pronóstico y tres ecuaciones de suavizado: una para el nivel, una para la tendencia y otra para el componente estacional, con los correspondientes parámetros de suavizado.</p>
 </section>
-<section id="section-1" class="slide level2">
-<h2></h2>
-<p><span style="color: #88188a; font-size: 55px"><strong>Ventajas 💡</strong></span></p>
-<ul>
-<li>Fácil de entender</li>
-<li>Util en exploración de datos:identificar importancia de variables a partir de cientos de variables.</li>
-<li>El tipo de datos no es una restricción</li>
-<li>Es un método no paramétrico (i.e., no hay suposición acerca del espacio de distribución y la estructura del clasificador)</li>
-</ul>
-<div class="fragment">
-<p><span style="color: #88188a; font-size: 55px"><strong>Desventajas 💡</strong></span></p>
-<ul>
-<li>Sobreajuste</li>
-<li>Pérdida de información al categorizar variables continuas</li>
-<li>Inestables debido a que pequeñas variaciones en el dataset pueden generar modelos muy diferentes.</li>
-</ul>
-</div>
-</section>
-<section id="section-2" class="slide level2" data-background-color="#C5E1A5">
-<h2></h2>
-<h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
-<p><span style="font-size: 100px;">Ensamble Learning 🌲🌲🌲</span></p>
-</h3>
-</section>
-<section id="ensamble-learning-motivación" class="slide level2">
-<h2>Ensamble learning: Motivación</h2>
-<p>Se basan en la idea de que el trabajo en conjunto debería dar mejores resultados.</p>
-<p>Habitualmente, un modelo “ensemble” es más preciso que los modelos que lo constituyen. Intuitivamente, esto se debe a que “dos aprenden mejor que uno”.</p>
-<div class="fragment">
-<blockquote>
-<p>Con los métodos de ensemble se pueden combinar múltiples modelos en uno nuevo y así lograr un equilibro entre <span style="color: #88188a;"><strong>sesgo y varianza</strong></span>, y por ende conseguir mejores predicciones que cualquiera de los modelos individuales originales</p>
-</blockquote>
-</div>
-</section>
-<section id="ensemble-learning-bagging" class="slide level2">
-<h2>Ensemble learning: Bagging</h2>
-<p>Los <span style="color: #88188a;"><strong>árboles de decisión</strong></span> son algoritmos inestables debido a que pequeñas variaciones en el dataset pueden generar modelos muy diferentes.</p>
-<div class="fragment">
-<blockquote>
-<p><span style="color: #88188a;"><strong>Bagging (Bootstrap Aggregation)</strong></span> es un método para hacer aprendizaje por <em>ensemble</em>. Consiste en realizar K subsets del dataset aleatoriamente y con reemplazo, resultando en un ensamble de K modelos. La asignación de la clase se realiza por mayoria simple en casos de clasificación.</p>
-</blockquote>
-</div>
-</section>
-<section id="ensemble-learning-bagging-1" class="slide level2">
-<h2>Ensemble learning: Bagging</h2>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/maestria_DM/main/aprendizaje_automatico/images/bagging.png" class="quarto-figure quarto-figure-center r-stretch"><div class="footer">
-<p>Imagen de Hendrik Blockeel</p>
-</div>
-</section>
-<section id="random-forest" class="slide level2">
-<h2>Random Forest</h2>
-<ul>
-<li><p>Es una modificación a Bagging para Árboles de Decisión.</p></li>
-<li><p>En cada árbol se consideran sólo M atributos elegidos aleatoriamente.</p></li>
-<li><p>El algoritmo es sencillo, fácil de implementar, fácil de usar y requiere de poco ajuste de parámetros.</p></li>
-<li><p>Es menos interpretable que los árboles de decisión.</p></li>
-</ul>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/random_forest.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="ensamble-learning-boosting" class="slide level2">
-<h2>Ensamble learning: Boosting</h2>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/maestria_DM/main/aprendizaje_automatico/images/boosting.png" class="quarto-figure quarto-figure-center r-stretch"><div class="footer">
-<p>Imagen extraída de <a href="https://datascience.eu/machine-learning/gradient-boosting-what-you-need-to-know/">aquí</a></p>
-</div>
-</section>
-<section id="bagging-vs-boosting" class="slide level2">
-<h2>Bagging vs Boosting</h2>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/maestria_DM/main/aprendizaje_automatico/images/bag_vs_boost.jpeg" class="quarto-figure quarto-figure-center r-stretch"><div class="footer">
-<p>Imagen extraída de <a href="https://towardsdatascience.com/ensemble-learning-bagging-boosting-3098079e5422">aquí</a></p>
-</div>
-</section>
-<section id="isolation-forest" class="slide level2">
-<h2>Isolation Forest</h2>
-
-<img data-src="img/isolation.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-3" class="slide level2" data-background-image="img/computadora.jpg" data-background-size="cover">
-<h2></h2>
-<h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:15px;line-height:2em; text-align: center; position: absolute; top: 25%; width: 56%;">
-<p><span style="font-size: 100px;">¡Manos a R!</span></p>
-</h3>
-<div class="footer">
-<p>Foto de <a href="https://unsplash.com/@emilep?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Emile Perron</a> en <a href="https://unsplash.com/es?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></p>
-</div>
-</section>
-<section id="section-4" class="slide level2" data-background-color="#C5E1A5">
-<h2></h2>
-<h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
-<p><span style="font-size: 100px;">Métricas 🔢</span></p>
-</h3>
-</section>
-<section id="el-conjunto-de-test" class="slide level2">
-<h2>El conjunto de test</h2>
-<p>Durante el proceso de aprendizaje, el modelo no debe acceder bajo ninguna circunstancia a los datos del conjunto de testeo, sino las estimaciones estarán sesgadas.</p>
-<p>El conjunto de validación se utiliza para ajustar los hiperparámetros y luego se hace la selección de modelos.</p>
-<p>Las métricas ayudan a capturar objetivos reales en forma cuantitativa (no todos los errores son iguales)</p>
-
-<img data-src="img/split_data.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="matriz-de-confusión" class="slide level2">
-<h2>Matriz de Confusión</h2>
-<p>Se quiere que los elementos diagonales tengan valores grandes y los no diagonales valores chicos</p>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/confusion_matrix.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="accuracy" class="slide level2">
-<h2>Accuracy</h2>
-<p><span class="math inline">\(\LARGE Accuracy = \frac{TP + TN}{TP+TN+FP+FN}\)</span></p>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/matrix.png" class="quarto-figure quarto-figure-center r-stretch"><p>No es adecuado cuando los datos están <span style="text-decoration: underline;"><strong>muy desbalanceados</strong></span> Le da mayor importancia a la clase mayoritaria.</p>
-</section>
-<section id="precision" class="slide level2">
-<h2>Precision</h2>
-<p>A mas precisión menos errores de tipo I (falsos positivos)</p>
-<p><span class="math inline">\(\LARGE Precision = \frac{TP}{TP+FP}\)</span></p>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/matrix.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="recall-sensitividad" class="slide level2">
-<h2>Recall (Sensitividad)</h2>
-<p>Encuentra todos los positivos. Utilizar cuando se quiere minimizar los falsos negativos.</p>
-<p><span class="math inline">\(\LARGE Recall = \frac{TP}{TP+FN}\)</span></p>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/matrix.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-5" class="slide level2">
-<h2></h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="f1-score">F1 Score</h3>
-<p>Medida armónica entre Precision y recall</p>
-<p><span class="math inline">\(\LARGE F1 = 2* \frac{precision * recall}{precision + recall}\)</span></p>
-</div><div class="column" style="width:50%;">
-<h3 id="especificidad">Especificidad</h3>
-<p><span class="math inline">\(\LARGE Especificidad = \frac{TN}{TN + FP}\)</span></p>
-</div></div>
-</section>
-<section id="curvas-roc" class="slide level2">
-<h2>Curvas ROC</h2>
-<p>Puedo comparar modelos</p>
-<p>AUC= área bajo la curva ROC, que también sirve para comparar modelos.</p>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/roc.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-6" class="slide level2" data-background-color="#C5E1A5">
-<h2></h2>
-<h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
-<p><span style="font-size: 100px;">Validación Cruzada 🎨</span></p>
-</h3>
-</section>
-<section id="conjunto-de-testeo" class="slide level2">
-<h2>Conjunto de testeo</h2>
-<p>Durante el proceso de aprendizaje, el modelo <span style="color: #88188a;"><strong>no debe acceder</strong></span> bajo ninguna circunstancia a los datos del conjunto de testeo, sino las estimaciones estarán sesgadas.</p>
-
-<img data-src="img/split_data.png" class="quarto-figure quarto-figure-center r-stretch"><div class="fragment">
-<blockquote>
-<p>El objetivo de un modelo de Machine Learning es que generalice bien frente a nuevos datos o datos no vistos por el modelo (set de testeo)</p>
-</blockquote>
-</div>
-</section>
-<section id="conjunto-de-validación" class="slide level2">
-<h2>Conjunto de validación</h2>
-<p>El conjunto de validación se utiliza para ajustar los hiperparámetros y luego se hace la selección de modelos.</p>
-<p>Importante para evitar el overfitting y obtener modelos estables.</p>
-<p>1- Selección de hiperparámetros</p>
-<p>2- Selección de modelos usando el conjunto de validación</p>
-<p>3- Encontrar la mejor configuración de hiperparámetros según la métrica elegida</p>
-<p>4- Evaluación final con el conjunto de testeo</p>
-</section>
-<section id="muestreo-estratificado" class="slide level2">
-<h2>Muestreo estratificado</h2>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/estratificado.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="cross-validation" class="slide level2">
-<h2>Cross-validation</h2>
-
-<img data-src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/cross.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-7" class="slide level2" data-background-image="img/computadora.jpg" data-background-size="cover">
+<section id="section-1" class="slide level2" data-background-image="img/computadora.jpg" data-background-size="cover">
 <h2></h2>
 <h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:15px;line-height:2em; text-align: center; position: absolute; top: 25%; width: 56%;">
 <p><span style="font-size: 100px;">¡Manos a R!</span></p>
@@ -719,12 +490,8 @@ Posgrado Digital Accounting
 <section id="referencias" class="slide level2">
 <h2>Referencias</h2>
 <ul>
-<li><p><a href="https://towardsdatascience.com/20-popular-machine-learning-metrics-part-1-classification-regression-evaluation-metrics-1ca3e282a2ce">20 Popular Machine Learning Metrics. Part 1: Classification &amp; Regression Evaluation Metrics</a></p></li>
-<li><p><a href="https://sitiobigdata.com/2018/08/27/machine-learning-metricas-regresion-mse/#">Aprendizaje Automático y las Métricas de Regresión</a></p></li>
-<li><p><a href="https://towardsdatascience.com/what-are-the-best-metrics-to-evaluate-your-regression-model-418ca481755b">3 best metrics to evaluate regresion models?</a></p></li>
-<li><p><a href="https://mlu-explain.github.io/roc-auc/">Curvas ROC-AUC</a></p></li>
-<li><p><a href="https://rstudio-conf-2020.github.io/applied-ml/Part_6.html#1">Applied Machine Learning</a> dictado en rstudio::conf 2020</p></li>
-<li><p><a href="https://www.youtube.com/watch?v=s3TkvZM60iU&amp;ab_channel=JuliaSilge">Data preprocessing and resampling using tidymodels</a>, tutorial en Youtube de Julia Silge</p></li>
+<li><p><a href="https://www.ucm.es/data/cont/docs/518-2013-11-11-JAM-IAST-Libro.pdf">Introducción a las Series Temporales</a></p></li>
+<li><p><a href="https://otexts.com/fpp2/">Forecasting: Principles and Practice</a></p></li>
 </ul>
 <div class="quarto-auto-generated-content">
 <p><img src="img/logo.jpg" class="slide-logo"></p>
@@ -737,20 +504,20 @@ Posgrado Digital Accounting
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="02_supervisado_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="02_supervisado_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="02_supervisado_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="02_supervisado_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="03_st_no_sup_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

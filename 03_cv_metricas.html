@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.55">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Pamela E. Pairo">
+<meta name="description" content="Trabajo Práctico n°3">
+
+<title>Aprendizaje Supervisado</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="03_cv_metricas_files/libs/clipboard/clipboard.min.js"></script>
+<script src="03_cv_metricas_files/libs/quarto-html/quarto.js"></script>
+<script src="03_cv_metricas_files/libs/quarto-html/popper.min.js"></script>
+<script src="03_cv_metricas_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="03_cv_metricas_files/libs/quarto-html/anchor.min.js"></script>
+<link href="03_cv_metricas_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="03_cv_metricas_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="03_cv_metricas_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="03_cv_metricas_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="03_cv_metricas_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#detección-del-fraude" id="toc-detección-del-fraude" class="nav-link active" data-scroll-target="#detección-del-fraude">Detección del Fraude</a>
+  <ul class="collapse">
+  <li><a href="#descripción-de-las-variables" id="toc-descripción-de-las-variables" class="nav-link" data-scroll-target="#descripción-de-las-variables">Descripción de las variables</a></li>
+  </ul></li>
+  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda">EDA</a></li>
+  <li><a href="#división-del-dataset-entrenamiento-y-testeo" id="toc-división-del-dataset-entrenamiento-y-testeo" class="nav-link" data-scroll-target="#división-del-dataset-entrenamiento-y-testeo">División del dataset: Entrenamiento y testeo</a></li>
+  <li><a href="#entrenando-modelos-con-tidymodels" id="toc-entrenando-modelos-con-tidymodels" class="nav-link" data-scroll-target="#entrenando-modelos-con-tidymodels">Entrenando modelos con <code>Tidymodels</code></a></li>
+  <li><a href="#preprocesamiento-de-datos-usando-recipe" id="toc-preprocesamiento-de-datos-usando-recipe" class="nav-link" data-scroll-target="#preprocesamiento-de-datos-usando-recipe">Preprocesamiento de datos usando <code>recipe</code></a></li>
+  <li><a href="#especificando-el-modelo" id="toc-especificando-el-modelo" class="nav-link" data-scroll-target="#especificando-el-modelo">Especificando el modelo</a></li>
+  <li><a href="#random-forest-con-cv" id="toc-random-forest-con-cv" class="nav-link" data-scroll-target="#random-forest-con-cv">Random Forest con CV</a>
+  <ul class="collapse">
+  <li><a href="#uniendo-todo-en-un-workflow" id="toc-uniendo-todo-en-un-workflow" class="nav-link" data-scroll-target="#uniendo-todo-en-un-workflow">Uniendo todo en un <em>Workflow</em></a></li>
+  <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation">Cross-validation</a></li>
+  <li><a href="#selección-del-mejor-modelo" id="toc-selección-del-mejor-modelo" class="nav-link" data-scroll-target="#selección-del-mejor-modelo">Selección del mejor modelo</a></li>
+  </ul></li>
+  <li><a href="#evaluación-en-test" id="toc-evaluación-en-test" class="nav-link" data-scroll-target="#evaluación-en-test">Evaluación en test</a>
+  <ul class="collapse">
+  <li><a href="#matriz-de-confusion" id="toc-matriz-de-confusion" class="nav-link" data-scroll-target="#matriz-de-confusion">Matriz de confusion</a></li>
+  <li><a href="#cuáles-fueron-las-variables-más-importantes" id="toc-cuáles-fueron-las-variables-más-importantes" class="nav-link" data-scroll-target="#cuáles-fueron-las-variables-más-importantes">¿Cuáles fueron las variables más importantes?</a></li>
+  </ul></li>
+  <li><a href="#predecir-un-nuevo-caso" id="toc-predecir-un-nuevo-caso" class="nav-link" data-scroll-target="#predecir-un-nuevo-caso">Predecir un nuevo caso</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Aprendizaje Supervisado</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+</div>
+
+<div>
+  <div class="description">
+    <p>Trabajo Práctico n°3</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Pamela E. Pairo </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="detección-del-fraude" class="level2">
+<h2 class="anchored" data-anchor-id="detección-del-fraude">Detección del Fraude</h2>
+<p>Carga de las librerias necesarias</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carga de paquetes necesarios</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">message =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">warning =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyverse' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tibble' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyr' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'readr' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'purrr' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'dplyr' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'stringr' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'forcats' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'lubridate' was built under R version 4.3.3</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'discrim' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'parsnip' was built under R version 4.3.3</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidymodels' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'broom' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'dials' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'scales' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'infer' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'modeldata' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'recipes' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'rsample' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tune' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'workflows' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'workflowsets' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'yardstick' was built under R version 4.3.3</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(workflows)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'C:/Users/Pame/Desktop/intro_ia_pda/data/df_fraude.csv'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sample_n</span>(<span class="dv">15000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span> (<span class="st">"gender"</span>, <span class="st">"amount"</span>, <span class="st">"fraud"</span>, <span class="st">"category"</span>, <span class="st">"age"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="descripción-de-las-variables" class="level3">
+<h3 class="anchored" data-anchor-id="descripción-de-las-variables">Descripción de las variables</h3>
+<ul>
+<li><p><code>Step</code>: representa el día en que la transacción sucede. En total son 180 <em>steps</em>, por lo que la base de datos es por 6 meses.</p></li>
+<li><p><code>Customer</code>: representa el ID de la persona que inicia la transacción. Está formada con la letra C seguida por una secuencia unica de 10 numeros.</p></li>
+<li><p><code>Age</code>: esta variable se divide en intervalos de edad, comenzando de 0 a 6 y la letra U que significa <em>Unknown</em>. La edad es <em>Unknow</em> solo para las transacciones que tienen el mismo género que <em>Enterprise</em>. La codificación de los números es:</p>
+<ul>
+<li>0: menor a 18 años</li>
+<li>1: entre 19 y 25 años</li>
+<li>2: entre 26 y 35 años</li>
+<li>3: entre 36 y 45 años</li>
+<li>4: entre 46 y 55 años</li>
+<li>5: entre 56 y 65 años</li>
+<li>6: mayor a 65 años</li>
+</ul></li>
+<li><p><code>Gender</code>: esta variable se codifica como F para Mujer, M para Hombre, E para Empresa y U para <em>Unknown</em>.</p></li>
+<li><p><code>Merchant</code>: esta variable representa la identificación única de la parte que recibe la transacción. Similar a la identificación del cliente, la secuencia está formada por la letra M, seguida de una serie de 9 números. Hay un total de 50 comerciantes únicos en el conjunto de datos.</p></li>
+<li><p><code>Category</code>: hay 15 categorías únicas que etiquetan el tipo general de transacción: transporte, comida, salud, bienestar y belleza, moda, bares y restaurantes, hiper, deportes y juguetes, tecnología, hogar, servicios de hotel, otros servicios, contenidos, viajes, ocio.</p></li>
+<li><p><code>Amount</code>: representa el valor de la transacción. Solo hay 52 valores iguales a 0 y ningún valor negativo.</p></li>
+<li><p><code>Fraud</code>: una columna indicadora codificada con 0 si la transacción fue limpia y con 1 si la transacción fue fraudulenta.</p></li>
+</ul>
+<p><code>zipcodeOri</code> y <code>zipMerchant</code>: contienen un valor constante de 28007, que es un código postal en Ansonville, Carolina del Norte, Estados Unidos.</p>
+</section>
+</section>
+<section id="eda" class="level2">
+<h2 class="anchored" data-anchor-id="eda">EDA</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>fraud <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>fraud)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>age)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>gender)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>category <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>category)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span> (df)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 15,000
+Columns: 5
+$ gender   &lt;fct&gt; 'F', 'F', 'M', 'F', 'F', 'M', 'M', 'F', 'F', 'M', 'M', 'F', '…
+$ amount   &lt;dbl&gt; 60.52, 16.98, 73.64, 18.32, 30.69, 20.86, 31.47, 42.24, 35.60…
+$ fraud    &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ category &lt;fct&gt; 'es_transportation', 'es_transportation', 'es_barsandrestaura…
+$ age      &lt;fct&gt; '2', '1', '4', '2', '2', '5', '2', '3', '4', '1', '3', '2', '…</code></pre>
+</div>
+</div>
+<p>Para una correcta interpretación de nuestros resultados vamos a especificar que <code>1</code> es nuestra clase positiva (cliente quiere contratar un seguro)</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>fraud <span class="ot">&lt;-</span> <span class="fu">relevel</span>(df<span class="sc">$</span>fraud, <span class="at">ref =</span> <span class="st">"1"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(df<span class="sc">$</span>fraud)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1" "0"</code></pre>
+</div>
+</div>
+</section>
+<section id="división-del-dataset-entrenamiento-y-testeo" class="level2">
+<h2 class="anchored" data-anchor-id="división-del-dataset-entrenamiento-y-testeo">División del dataset: Entrenamiento y testeo</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/split_data.png" class="fragment img-fluid quarto-figure quarto-figure-center figure-img" data-lenght="700" width="500"></p>
+</figure>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)<span class="co">#setear la semilla</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create data split for train and test</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>df_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(df,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">prop =</span> <span class="fl">0.7</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">strata =</span> fraud)<span class="co"># para conservar la proporción de clases</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create training data</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> df_split <span class="sc">%&gt;%</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>              <span class="fu">training</span>()</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create testing data</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> df_split <span class="sc">%&gt;%</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>              <span class="fu">testing</span>()</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of rows in train and test dataset</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Total del dataset de entrenamiento: "</span>, <span class="fu">nrow</span>(df_train))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Total del dataset de entrenamiento: 10500"</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Total del dataset de testeo: "</span>, <span class="fu">nrow</span>(df_test))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Total del dataset de testeo: 4500"</code></pre>
+</div>
+</div>
+</section>
+<section id="entrenando-modelos-con-tidymodels" class="level2">
+<h2 class="anchored" data-anchor-id="entrenando-modelos-con-tidymodels">Entrenando modelos con <code>Tidymodels</code></h2>
+<blockquote class="blockquote">
+<p><i class="fas fa-code-branch pr2"></i> Si no tenés instalado <code>tidymodels</code> podés hacerlo corriendo el siguiente código</p>
+</blockquote>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidymodels"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Al igual que <code>tidyverse</code>, <code>tidymodels</code> está compuesto por un conjunto de paquetes como los siguientes:</p>
+<ul>
+<li><p><code>rsample</code>: para realizar la división del dataset en entrenamiento, validación y testeo.</p></li>
+<li><p><code>recipes</code>: para el preprocesamiento</p></li>
+<li><p><code>parnship</code>: para especificar el modelo</p></li>
+<li><p><code>yardstick</code>: para evaluar el modelo</p></li>
+</ul>
+<p>Mayores especificaciones y ejemplos de uso de <code>tidymodels</code>, en su <a href="https://www.tidymodels.org/packages/">página</a></p>
+</section>
+<section id="preprocesamiento-de-datos-usando-recipe" class="level2">
+<h2 class="anchored" data-anchor-id="preprocesamiento-de-datos-usando-recipe">Preprocesamiento de datos usando <code>recipe</code></h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>recipe_df <span class="ot">&lt;-</span>  <span class="fu">recipe</span> (fraud <span class="sc">~</span> ., <span class="at">data=</span> df_train) <span class="sc">|&gt;</span>  </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">step_scale</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>              <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Bake</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> <span class="fu">bake</span>(recipe_df<span class="sc">|&gt;</span> </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>              <span class="fu">prep</span>(), <span class="at">new_data=</span>df_train)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">bake</span>(recipe_df<span class="sc">|&gt;</span> </span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>              <span class="fu">prep</span>(), <span class="at">new_data=</span>df_test)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="especificando-el-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="especificando-el-modelo">Especificando el modelo</h2>
+<p>Se puede entrenar cualquier modelo (que este incluído en <code>tidymodels</code>) siguiendo los pasos que se muestran a continuación.</p>
+<p>1- Especificar el modelo (eg. Regresión logística, Random Forest, SVM, etc)</p>
+<p>2- Con <code>set_engine()</code> se especifíca la familia de modelos</p>
+<p>3- Con <code>set_mode()</code> se especifica el tipo de modelo a entrenarse (regresión o clasificación)</p>
+<p>4- Usar la función <code>fit ()</code> para entrenar el modelo y, dentro de eso, debe proporcionar la notación de la fórmula y el conjunto de datos</p>
+</section>
+<section id="random-forest-con-cv" class="level1">
+<h1>Random Forest con CV</h1>
+<p>Con <code>tune</code>, se especifica qué hiperparámetros van a ser tuneados.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Random forest con validacion cruzada</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">234</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>model_RF <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">mtry =</span> <span class="fu">tune</span>(), </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">min_n =</span> <span class="fu">tune</span>(),</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">trees =</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span>    </span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>             <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="uniendo-todo-en-un-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="uniendo-todo-en-un-workflow">Uniendo todo en un <em>Workflow</em></h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>wf_RF <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span>  </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">add_recipe</span>(recipe_df) <span class="sc">|&gt;</span> </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">add_model</span>(model_RF)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>wf_RF</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: rand_forest()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+2 Recipe Steps
+
+• step_scale()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Random Forest Model Specification (classification)
+
+Main Arguments:
+  mtry = tune()
+  trees = 50
+  min_n = tune()
+
+Computational engine: ranger </code></pre>
+</div>
+</div>
+</section>
+<section id="cross-validation" class="level2">
+<h2 class="anchored" data-anchor-id="cross-validation">Cross-validation</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/cross.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>fold_df <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train, <span class="at">v=</span><span class="dv">5</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>fold_df<span class="sc">$</span>splits</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+&lt;Analysis/Assess/Total&gt;
+&lt;8400/2100/10500&gt;
+
+[[2]]
+&lt;Analysis/Assess/Total&gt;
+&lt;8400/2100/10500&gt;
+
+[[3]]
+&lt;Analysis/Assess/Total&gt;
+&lt;8400/2100/10500&gt;
+
+[[4]]
+&lt;Analysis/Assess/Total&gt;
+&lt;8400/2100/10500&gt;
+
+[[5]]
+&lt;Analysis/Assess/Total&gt;
+&lt;8400/2100/10500&gt;</code></pre>
+</div>
+</div>
+<p>Necesitamos un conjunto de posibles valores de parámetros para probar el árbol de decisión.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>param_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(<span class="fu">mtry</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">30</span>)), </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">min_n</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>param_grid</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+   mtry min_n
+  &lt;int&gt; &lt;int&gt;
+1    10     2
+2    20     2
+3    30     2
+4    10     5
+5    20     5
+6    30     5
+7    10     8
+8    20     8
+9    30     8</code></pre>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://pbs.twimg.com/media/FD2hTDOX0AIdRti.jpg" class="fragment img-fluid quarto-figure quarto-figure-center figure-img" data-lenght="700" width="500"></p>
+</figure>
+</div>
+<p>Si la prioridad es predecir correctamente a los positivos –&gt; buscamos alta sensibilidad</p>
+<p>Si se quiere identificar correctamente a los negativos –&gt; buscamos alta especificidad</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>() <span class="co">#paralelizamos los cálculos</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>tune_DF <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  model_RF,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  fraud<span class="sc">~</span> .,</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> fold_df, </span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid =</span> param_grid, </span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, roc_auc, precision)</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Las métricas provienen del rendimiento de la validación cruzada a través de los diferentes valores de los parámetros.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(tune_DF)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 27 × 8
+    mtry min_n .metric   .estimator  mean     n  std_err .config             
+   &lt;int&gt; &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;               
+ 1    10     2 accuracy  binary     0.994     5 0.00130  Preprocessor1_Model1
+ 2    10     2 precision binary     0.868     5 0.0306   Preprocessor1_Model1
+ 3    10     2 roc_auc   binary     0.971     5 0.0132   Preprocessor1_Model1
+ 4    20     2 accuracy  binary     0.994     5 0.000777 Preprocessor1_Model2
+ 5    20     2 precision binary     0.812     5 0.0557   Preprocessor1_Model2
+ 6    20     2 roc_auc   binary     0.949     5 0.0244   Preprocessor1_Model2
+ 7    30     2 accuracy  binary     0.993     5 0.00101  Preprocessor1_Model3
+ 8    30     2 precision binary     0.781     5 0.0580   Preprocessor1_Model3
+ 9    30     2 roc_auc   binary     0.920     5 0.0266   Preprocessor1_Model3
+10    10     5 accuracy  binary     0.994     5 0.00122  Preprocessor1_Model4
+# ℹ 17 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(tune_DF)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_cv_metricas_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="selección-del-mejor-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="selección-del-mejor-modelo">Selección del mejor modelo</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>param_final <span class="ot">&lt;-</span> tune_DF <span class="sc">|&gt;</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"precision"</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>param_final</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+   mtry min_n .config             
+  &lt;int&gt; &lt;int&gt; &lt;chr&gt;               
+1    10     2 Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>wf_RF <span class="ot">&lt;-</span> wf_RF <span class="sc">|&gt;</span> </span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(param_final)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>wf_RF</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: rand_forest()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+2 Recipe Steps
+
+• step_scale()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Random Forest Model Specification (classification)
+
+Main Arguments:
+  mtry = 10
+  trees = 50
+  min_n = 2
+
+Computational engine: ranger </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="evaluación-en-test" class="level1">
+<h1>Evaluación en test</h1>
+<p>A continuación, se ajusta el flujo de trabajo del modelo final a los datos de entrenamiento y se evalúa el rendimiento en los datos de testeo.</p>
+<p>La función ´last_fit()´ ajuta el flujo de trabajo a los datos de entrenamiento y generará predicciones sobre los datos de prueba según lo define nuestro objeto churn_split.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>dt_fit <span class="ot">&lt;-</span> wf_RF <span class="sc">|&gt;</span> </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit on the training set and evaluate on test set</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(df_split, <span class="at">metrics =</span> <span class="fu">metric_set</span>(precision))</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>dt_fit</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# Manual resampling 
+# A tibble: 1 × 6
+  splits               id              .metrics .notes   .predictions .workflow 
+  &lt;list&gt;               &lt;chr&gt;           &lt;list&gt;   &lt;list&gt;   &lt;list&gt;       &lt;list&gt;    
+1 &lt;split [10500/4500]&gt; train/test spl… &lt;tibble&gt; &lt;tibble&gt; &lt;tibble&gt;     &lt;workflow&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>test_performance <span class="ot">&lt;-</span> dt_fit <span class="sc">|&gt;</span>  <span class="fu">collect_metrics</span>()</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>test_performance</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  .metric   .estimator .estimate .config             
+  &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 precision binary         0.829 Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<section id="matriz-de-confusion" class="level2">
+<h2 class="anchored" data-anchor-id="matriz-de-confusion">Matriz de confusion</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(dt_fit) <span class="sc">|&gt;</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(fraud, .pred_class)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction    1    0
+         1   34    7
+         0   24 4435</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>final_RF <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(dt_fit)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>final_RF</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: rand_forest()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+2 Recipe Steps
+
+• step_scale()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Ranger result
+
+Call:
+ ranger::ranger(x = maybe_data_frame(x), y = y, mtry = min_cols(~10L,      x), num.trees = ~50, min.node.size = min_rows(~2L, x), num.threads = 1,      verbose = FALSE, seed = sample.int(10^5, 1), probability = TRUE) 
+
+Type:                             Probability estimation 
+Number of trees:                  50 
+Sample size:                      10500 
+Number of independent variables:  25 
+Mtry:                             10 
+Target node size:                 2 
+Variable importance mode:         none 
+Splitrule:                        gini 
+OOB prediction error (Brier s.):  0.00508954 </code></pre>
+</div>
+</div>
+</section>
+<section id="cuáles-fueron-las-variables-más-importantes" class="level2">
+<h2 class="anchored" data-anchor-id="cuáles-fueron-las-variables-más-importantes">¿Cuáles fueron las variables más importantes?</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>best_precision <span class="ot">&lt;-</span> <span class="fu">select_best</span>(tune_DF, <span class="at">metric=</span> <span class="st">"precision"</span>)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>final_rf <span class="ot">&lt;-</span> <span class="fu">finalize_model</span>(</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  model_RF,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  best_precision</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>final_rf <span class="sc">%&gt;%</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"permutation"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(fraud <span class="sc">~</span> .,</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> df_train</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_cv_metricas_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="predecir-un-nuevo-caso" class="level1">
+<h1>Predecir un nuevo caso</h1>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un nuevo caso de ejemplo</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>nuevo_caso <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> <span class="st">"'M'"</span>,</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">amount =</span> <span class="fl">600.2</span>,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">category=</span> <span class="st">"'es_fashion'"</span>,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">age=</span> <span class="st">"'5'"</span></span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Predecir con el modelo final</span></span>
+<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>prediccion <span class="ot">&lt;-</span> <span class="fu">predict</span>(final_RF, nuevo_caso)</span>
+<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver la predicción</span></span>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>prediccion</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  .pred_class
+  &lt;fct&gt;      
+1 1          </code></pre>
+</div>
+</div>
+<!-- -->
+
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb67" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aprendizaje Supervisado"</span></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Pamela E. Pairo"</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> es</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a><span class="co">  Trabajo Práctico n°3</span></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: flatly</span></span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-location: left</span></span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Detección del Fraude</span></span>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a>Carga de las librerias necesarias</span>
+<span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-20"><a href="#cb67-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, message=FALSE}</span></span>
+<span id="cb67-21"><a href="#cb67-21" aria-hidden="true" tabindex="-1"></a><span class="in"># Carga de paquetes necesarios</span></span>
+<span id="cb67-22"><a href="#cb67-22" aria-hidden="true" tabindex="-1"></a><span class="in">knitr::opts_chunk$set(echo = TRUE)</span></span>
+<span id="cb67-23"><a href="#cb67-23" aria-hidden="true" tabindex="-1"></a><span class="in">knitr::opts_chunk$set(message = FALSE)</span></span>
+<span id="cb67-24"><a href="#cb67-24" aria-hidden="true" tabindex="-1"></a><span class="in">knitr::opts_chunk$set(warning = FALSE)</span></span>
+<span id="cb67-25"><a href="#cb67-25" aria-hidden="true" tabindex="-1"></a><span class="in">library(tidyverse)</span></span>
+<span id="cb67-26"><a href="#cb67-26" aria-hidden="true" tabindex="-1"></a><span class="in">library(discrim)</span></span>
+<span id="cb67-27"><a href="#cb67-27" aria-hidden="true" tabindex="-1"></a><span class="in">library(tidymodels)</span></span>
+<span id="cb67-28"><a href="#cb67-28" aria-hidden="true" tabindex="-1"></a><span class="in">library(workflows)</span></span>
+<span id="cb67-29"><a href="#cb67-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-30"><a href="#cb67-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-33"><a href="#cb67-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-34"><a href="#cb67-34" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
+<span id="cb67-35"><a href="#cb67-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-36"><a href="#cb67-36" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'C:/Users/Pame/Desktop/intro_ia_pda/data/df_fraude.csv'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-37"><a href="#cb67-37" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sample_n</span>(<span class="dv">15000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-38"><a href="#cb67-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span> (<span class="st">"gender"</span>, <span class="st">"amount"</span>, <span class="st">"fraud"</span>, <span class="st">"category"</span>, <span class="st">"age"</span>)</span>
+<span id="cb67-39"><a href="#cb67-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-40"><a href="#cb67-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-41"><a href="#cb67-41" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descripción de las variables</span></span>
+<span id="cb67-42"><a href="#cb67-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-43"><a href="#cb67-43" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Step`</span>: representa el día en que la transacción sucede. En total son 180 *steps*, por lo que la base de datos es por 6 meses.</span>
+<span id="cb67-44"><a href="#cb67-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-45"><a href="#cb67-45" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Customer`</span>: representa el ID de la persona que inicia la transacción. Está formada con la letra C seguida por una secuencia unica de 10 numeros.</span>
+<span id="cb67-46"><a href="#cb67-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-47"><a href="#cb67-47" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Age`</span>: esta variable se divide en intervalos de edad, comenzando de 0 a 6 y la letra U que significa *Unknown*. La edad es *Unknow* solo para las transacciones que tienen el mismo género que *Enterprise*. La codificación de los números es:</span>
+<span id="cb67-48"><a href="#cb67-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-49"><a href="#cb67-49" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>0: menor a 18 años</span>
+<span id="cb67-50"><a href="#cb67-50" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>1: entre 19 y 25 años</span>
+<span id="cb67-51"><a href="#cb67-51" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>2: entre 26 y 35 años</span>
+<span id="cb67-52"><a href="#cb67-52" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>3: entre 36 y 45 años</span>
+<span id="cb67-53"><a href="#cb67-53" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>4: entre 46 y 55 años</span>
+<span id="cb67-54"><a href="#cb67-54" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>5: entre 56 y 65 años</span>
+<span id="cb67-55"><a href="#cb67-55" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>6: mayor a 65 años</span>
+<span id="cb67-56"><a href="#cb67-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-57"><a href="#cb67-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Gender`</span>: esta variable se codifica como F para Mujer, M para Hombre, E para Empresa y U para *Unknown*.</span>
+<span id="cb67-58"><a href="#cb67-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-59"><a href="#cb67-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Merchant`</span>: esta variable representa la identificación única de la parte que recibe la transacción. Similar a la identificación del cliente, la secuencia está formada por la letra M, seguida de una serie de 9 números. Hay un total de 50 comerciantes únicos en el conjunto de datos.</span>
+<span id="cb67-60"><a href="#cb67-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-61"><a href="#cb67-61" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Category`</span>: hay 15 categorías únicas que etiquetan el tipo general de transacción: transporte, comida, salud, bienestar y belleza, moda, bares y restaurantes, hiper, deportes y juguetes, tecnología, hogar, servicios de hotel, otros servicios, contenidos, viajes, ocio.</span>
+<span id="cb67-62"><a href="#cb67-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-63"><a href="#cb67-63" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Amount`</span>: representa el valor de la transacción. Solo hay 52 valores iguales a 0 y ningún valor negativo.</span>
+<span id="cb67-64"><a href="#cb67-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-65"><a href="#cb67-65" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Fraud`</span>: una columna indicadora codificada con 0 si la transacción fue limpia y con 1 si la transacción fue fraudulenta.</span>
+<span id="cb67-66"><a href="#cb67-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-67"><a href="#cb67-67" aria-hidden="true" tabindex="-1"></a><span class="in">`zipcodeOri`</span> y <span class="in">`zipMerchant`</span>: contienen un valor constante de 28007, que es un código postal en Ansonville, Carolina del Norte, Estados Unidos.</span>
+<span id="cb67-68"><a href="#cb67-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-69"><a href="#cb67-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## EDA</span></span>
+<span id="cb67-70"><a href="#cb67-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-73"><a href="#cb67-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-74"><a href="#cb67-74" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>fraud <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>fraud)</span>
+<span id="cb67-75"><a href="#cb67-75" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>age <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>age)</span>
+<span id="cb67-76"><a href="#cb67-76" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>gender)</span>
+<span id="cb67-77"><a href="#cb67-77" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>category <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>category)</span>
+<span id="cb67-78"><a href="#cb67-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-79"><a href="#cb67-79" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span> (df)</span>
+<span id="cb67-80"><a href="#cb67-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-81"><a href="#cb67-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-82"><a href="#cb67-82" aria-hidden="true" tabindex="-1"></a>Para una correcta interpretación de nuestros resultados vamos a especificar que <span class="in">`1`</span> es nuestra clase positiva (cliente quiere contratar un seguro)</span>
+<span id="cb67-83"><a href="#cb67-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-86"><a href="#cb67-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-87"><a href="#cb67-87" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>fraud <span class="ot">&lt;-</span> <span class="fu">relevel</span>(df<span class="sc">$</span>fraud, <span class="at">ref =</span> <span class="st">"1"</span>)</span>
+<span id="cb67-88"><a href="#cb67-88" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(df<span class="sc">$</span>fraud)</span>
+<span id="cb67-89"><a href="#cb67-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-90"><a href="#cb67-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-91"><a href="#cb67-91" aria-hidden="true" tabindex="-1"></a><span class="fu">## División del dataset: Entrenamiento y testeo</span></span>
+<span id="cb67-92"><a href="#cb67-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-93"><a href="#cb67-93" aria-hidden="true" tabindex="-1"></a><span class="al">![](img/split_data.png)</span>{.fragment width="500" lenght="700" fig-align="center"}</span>
+<span id="cb67-94"><a href="#cb67-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-97"><a href="#cb67-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-98"><a href="#cb67-98" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)<span class="co">#setear la semilla</span></span>
+<span id="cb67-99"><a href="#cb67-99" aria-hidden="true" tabindex="-1"></a><span class="co"># Create data split for train and test</span></span>
+<span id="cb67-100"><a href="#cb67-100" aria-hidden="true" tabindex="-1"></a>df_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(df,</span>
+<span id="cb67-101"><a href="#cb67-101" aria-hidden="true" tabindex="-1"></a>                          <span class="at">prop =</span> <span class="fl">0.7</span>,</span>
+<span id="cb67-102"><a href="#cb67-102" aria-hidden="true" tabindex="-1"></a>                          <span class="at">strata =</span> fraud)<span class="co"># para conservar la proporción de clases</span></span>
+<span id="cb67-103"><a href="#cb67-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Create training data</span></span>
+<span id="cb67-104"><a href="#cb67-104" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> df_split <span class="sc">%&gt;%</span></span>
+<span id="cb67-105"><a href="#cb67-105" aria-hidden="true" tabindex="-1"></a>              <span class="fu">training</span>()</span>
+<span id="cb67-106"><a href="#cb67-106" aria-hidden="true" tabindex="-1"></a><span class="co"># Create testing data</span></span>
+<span id="cb67-107"><a href="#cb67-107" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> df_split <span class="sc">%&gt;%</span></span>
+<span id="cb67-108"><a href="#cb67-108" aria-hidden="true" tabindex="-1"></a>              <span class="fu">testing</span>()</span>
+<span id="cb67-109"><a href="#cb67-109" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of rows in train and test dataset</span></span>
+<span id="cb67-110"><a href="#cb67-110" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Total del dataset de entrenamiento: "</span>, <span class="fu">nrow</span>(df_train))</span>
+<span id="cb67-111"><a href="#cb67-111" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"Total del dataset de testeo: "</span>, <span class="fu">nrow</span>(df_test))</span>
+<span id="cb67-112"><a href="#cb67-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-113"><a href="#cb67-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-114"><a href="#cb67-114" aria-hidden="true" tabindex="-1"></a><span class="fu">## Entrenando modelos con `Tidymodels`</span></span>
+<span id="cb67-115"><a href="#cb67-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-116"><a href="#cb67-116" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span>&lt;i class='fas fa-code-branch pr2'&gt;&lt;/i&gt;<span class="at"> Si no tenés instalado </span><span class="in">`tidymodels`</span><span class="at"> podés hacerlo corriendo el siguiente código</span></span>
+<span id="cb67-117"><a href="#cb67-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-118"><a href="#cb67-118" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb67-119"><a href="#cb67-119" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidymodels"</span>)</span>
+<span id="cb67-120"><a href="#cb67-120" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-121"><a href="#cb67-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-122"><a href="#cb67-122" aria-hidden="true" tabindex="-1"></a>Al igual que <span class="in">`tidyverse`</span>, <span class="in">`tidymodels`</span> está compuesto por un conjunto de paquetes como los siguientes:</span>
+<span id="cb67-123"><a href="#cb67-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-124"><a href="#cb67-124" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`rsample`</span>: para realizar la división del dataset en entrenamiento, validación y testeo.</span>
+<span id="cb67-125"><a href="#cb67-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-126"><a href="#cb67-126" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`recipes`</span>: para el preprocesamiento</span>
+<span id="cb67-127"><a href="#cb67-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-128"><a href="#cb67-128" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`parnship`</span>: para especificar el modelo</span>
+<span id="cb67-129"><a href="#cb67-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-130"><a href="#cb67-130" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`yardstick`</span>: para evaluar el modelo</span>
+<span id="cb67-131"><a href="#cb67-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-132"><a href="#cb67-132" aria-hidden="true" tabindex="-1"></a>Mayores especificaciones y ejemplos de uso de <span class="in">`tidymodels`</span>, en su <span class="co">[</span><span class="ot">página</span><span class="co">](https://www.tidymodels.org/packages/)</span></span>
+<span id="cb67-133"><a href="#cb67-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-134"><a href="#cb67-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-135"><a href="#cb67-135" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preprocesamiento de datos usando `recipe`</span></span>
+<span id="cb67-136"><a href="#cb67-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-139"><a href="#cb67-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-140"><a href="#cb67-140" aria-hidden="true" tabindex="-1"></a>recipe_df <span class="ot">&lt;-</span>  <span class="fu">recipe</span> (fraud <span class="sc">~</span> ., <span class="at">data=</span> df_train) <span class="sc">|&gt;</span>  </span>
+<span id="cb67-141"><a href="#cb67-141" aria-hidden="true" tabindex="-1"></a>              <span class="fu">step_scale</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb67-142"><a href="#cb67-142" aria-hidden="true" tabindex="-1"></a>              <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb67-143"><a href="#cb67-143" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb67-144"><a href="#cb67-144" aria-hidden="true" tabindex="-1"></a><span class="co"># Bake</span></span>
+<span id="cb67-145"><a href="#cb67-145" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> <span class="fu">bake</span>(recipe_df<span class="sc">|&gt;</span> </span>
+<span id="cb67-146"><a href="#cb67-146" aria-hidden="true" tabindex="-1"></a>              <span class="fu">prep</span>(), <span class="at">new_data=</span>df_train)</span>
+<span id="cb67-147"><a href="#cb67-147" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">bake</span>(recipe_df<span class="sc">|&gt;</span> </span>
+<span id="cb67-148"><a href="#cb67-148" aria-hidden="true" tabindex="-1"></a>              <span class="fu">prep</span>(), <span class="at">new_data=</span>df_test)</span>
+<span id="cb67-149"><a href="#cb67-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-150"><a href="#cb67-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-151"><a href="#cb67-151" aria-hidden="true" tabindex="-1"></a><span class="fu">## Especificando el modelo</span></span>
+<span id="cb67-152"><a href="#cb67-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-153"><a href="#cb67-153" aria-hidden="true" tabindex="-1"></a>Se puede entrenar cualquier modelo (que este incluído en <span class="in">`tidymodels`</span>) siguiendo los pasos que se muestran a continuación.</span>
+<span id="cb67-154"><a href="#cb67-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-155"><a href="#cb67-155" aria-hidden="true" tabindex="-1"></a>1- Especificar el modelo (eg. Regresión logística, Random Forest, SVM, etc)</span>
+<span id="cb67-156"><a href="#cb67-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-157"><a href="#cb67-157" aria-hidden="true" tabindex="-1"></a>2- Con <span class="in">`set_engine()`</span> se especifíca la familia de modelos</span>
+<span id="cb67-158"><a href="#cb67-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-159"><a href="#cb67-159" aria-hidden="true" tabindex="-1"></a>3- Con <span class="in">`set_mode()`</span> se especifica el tipo de modelo a entrenarse (regresión o clasificación)</span>
+<span id="cb67-160"><a href="#cb67-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-161"><a href="#cb67-161" aria-hidden="true" tabindex="-1"></a>4- Usar la función <span class="in">`fit ()`</span> para entrenar el modelo y, dentro de eso, debe proporcionar la notación de la fórmula y el conjunto de datos</span>
+<span id="cb67-162"><a href="#cb67-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-163"><a href="#cb67-163" aria-hidden="true" tabindex="-1"></a><span class="fu"># Random Forest con CV</span></span>
+<span id="cb67-164"><a href="#cb67-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-165"><a href="#cb67-165" aria-hidden="true" tabindex="-1"></a>Con <span class="in">`tune`</span>, se especifica qué hiperparámetros van a ser tuneados.</span>
+<span id="cb67-166"><a href="#cb67-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-169"><a href="#cb67-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-170"><a href="#cb67-170" aria-hidden="true" tabindex="-1"></a><span class="co">#Random forest con validacion cruzada</span></span>
+<span id="cb67-171"><a href="#cb67-171" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">234</span>)</span>
+<span id="cb67-172"><a href="#cb67-172" aria-hidden="true" tabindex="-1"></a>model_RF <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">mtry =</span> <span class="fu">tune</span>(), </span>
+<span id="cb67-173"><a href="#cb67-173" aria-hidden="true" tabindex="-1"></a>                         <span class="at">min_n =</span> <span class="fu">tune</span>(),</span>
+<span id="cb67-174"><a href="#cb67-174" aria-hidden="true" tabindex="-1"></a>                         <span class="at">trees =</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span>    </span>
+<span id="cb67-175"><a href="#cb67-175" aria-hidden="true" tabindex="-1"></a>             <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb67-176"><a href="#cb67-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-177"><a href="#cb67-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-178"><a href="#cb67-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Uniendo todo en un *Workflow*</span></span>
+<span id="cb67-179"><a href="#cb67-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-182"><a href="#cb67-182" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-183"><a href="#cb67-183" aria-hidden="true" tabindex="-1"></a>wf_RF <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span>  </span>
+<span id="cb67-184"><a href="#cb67-184" aria-hidden="true" tabindex="-1"></a>          <span class="fu">add_recipe</span>(recipe_df) <span class="sc">|&gt;</span> </span>
+<span id="cb67-185"><a href="#cb67-185" aria-hidden="true" tabindex="-1"></a>          <span class="fu">add_model</span>(model_RF)</span>
+<span id="cb67-186"><a href="#cb67-186" aria-hidden="true" tabindex="-1"></a>wf_RF</span>
+<span id="cb67-187"><a href="#cb67-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-188"><a href="#cb67-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-189"><a href="#cb67-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cross-validation</span></span>
+<span id="cb67-190"><a href="#cb67-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-191"><a href="#cb67-191" aria-hidden="true" tabindex="-1"></a><span class="al">![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/cross.png)</span>{fig-align="center"}</span>
+<span id="cb67-192"><a href="#cb67-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-195"><a href="#cb67-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-196"><a href="#cb67-196" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb67-197"><a href="#cb67-197" aria-hidden="true" tabindex="-1"></a>fold_df <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train, <span class="at">v=</span><span class="dv">5</span>)</span>
+<span id="cb67-198"><a href="#cb67-198" aria-hidden="true" tabindex="-1"></a>fold_df<span class="sc">$</span>splits</span>
+<span id="cb67-199"><a href="#cb67-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-200"><a href="#cb67-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-201"><a href="#cb67-201" aria-hidden="true" tabindex="-1"></a>Necesitamos un conjunto de posibles valores de parámetros para probar el árbol de decisión.</span>
+<span id="cb67-202"><a href="#cb67-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-205"><a href="#cb67-205" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-206"><a href="#cb67-206" aria-hidden="true" tabindex="-1"></a>param_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(<span class="fu">mtry</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">30</span>)), </span>
+<span id="cb67-207"><a href="#cb67-207" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">min_n</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">8</span>)))</span>
+<span id="cb67-208"><a href="#cb67-208" aria-hidden="true" tabindex="-1"></a>param_grid</span>
+<span id="cb67-209"><a href="#cb67-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-210"><a href="#cb67-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-211"><a href="#cb67-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-212"><a href="#cb67-212" aria-hidden="true" tabindex="-1"></a><span class="al">![](https://pbs.twimg.com/media/FD2hTDOX0AIdRti.jpg)</span>{.fragment width="500" lenght="700" fig-align="center"}</span>
+<span id="cb67-213"><a href="#cb67-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-214"><a href="#cb67-214" aria-hidden="true" tabindex="-1"></a>Si la prioridad es predecir correctamente a los positivos --&gt; buscamos alta sensibilidad</span>
+<span id="cb67-215"><a href="#cb67-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-216"><a href="#cb67-216" aria-hidden="true" tabindex="-1"></a>Si se quiere identificar correctamente a los negativos --&gt; buscamos alta especificidad</span>
+<span id="cb67-217"><a href="#cb67-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-220"><a href="#cb67-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-221"><a href="#cb67-221" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>() <span class="co">#paralelizamos los cálculos</span></span>
+<span id="cb67-222"><a href="#cb67-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-223"><a href="#cb67-223" aria-hidden="true" tabindex="-1"></a>tune_DF <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb67-224"><a href="#cb67-224" aria-hidden="true" tabindex="-1"></a>  model_RF,</span>
+<span id="cb67-225"><a href="#cb67-225" aria-hidden="true" tabindex="-1"></a>  fraud<span class="sc">~</span> .,</span>
+<span id="cb67-226"><a href="#cb67-226" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> fold_df, </span>
+<span id="cb67-227"><a href="#cb67-227" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid =</span> param_grid, </span>
+<span id="cb67-228"><a href="#cb67-228" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, roc_auc, precision)</span>
+<span id="cb67-229"><a href="#cb67-229" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb67-230"><a href="#cb67-230" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-231"><a href="#cb67-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-232"><a href="#cb67-232" aria-hidden="true" tabindex="-1"></a>Las métricas provienen del rendimiento de la validación cruzada a través de los diferentes valores de los parámetros.</span>
+<span id="cb67-233"><a href="#cb67-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-236"><a href="#cb67-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-237"><a href="#cb67-237" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(tune_DF)</span>
+<span id="cb67-238"><a href="#cb67-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-239"><a href="#cb67-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-242"><a href="#cb67-242" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-243"><a href="#cb67-243" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(tune_DF)</span>
+<span id="cb67-244"><a href="#cb67-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-245"><a href="#cb67-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-246"><a href="#cb67-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## Selección del mejor modelo</span></span>
+<span id="cb67-247"><a href="#cb67-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-250"><a href="#cb67-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-251"><a href="#cb67-251" aria-hidden="true" tabindex="-1"></a>param_final <span class="ot">&lt;-</span> tune_DF <span class="sc">|&gt;</span> </span>
+<span id="cb67-252"><a href="#cb67-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"precision"</span>)</span>
+<span id="cb67-253"><a href="#cb67-253" aria-hidden="true" tabindex="-1"></a>param_final</span>
+<span id="cb67-254"><a href="#cb67-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-255"><a href="#cb67-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-256"><a href="#cb67-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-259"><a href="#cb67-259" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-260"><a href="#cb67-260" aria-hidden="true" tabindex="-1"></a>wf_RF <span class="ot">&lt;-</span> wf_RF <span class="sc">|&gt;</span> </span>
+<span id="cb67-261"><a href="#cb67-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(param_final)</span>
+<span id="cb67-262"><a href="#cb67-262" aria-hidden="true" tabindex="-1"></a>wf_RF</span>
+<span id="cb67-263"><a href="#cb67-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-264"><a href="#cb67-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-265"><a href="#cb67-265" aria-hidden="true" tabindex="-1"></a><span class="fu"># Evaluación en test</span></span>
+<span id="cb67-266"><a href="#cb67-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-267"><a href="#cb67-267" aria-hidden="true" tabindex="-1"></a>A continuación, se ajusta el flujo de trabajo del modelo final a los datos de entrenamiento y se evalúa el rendimiento en los datos de testeo.</span>
+<span id="cb67-268"><a href="#cb67-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-269"><a href="#cb67-269" aria-hidden="true" tabindex="-1"></a>La función ´last_fit()´ ajuta el flujo de trabajo a los datos de entrenamiento y generará predicciones sobre los datos de prueba según lo define nuestro objeto churn_split.</span>
+<span id="cb67-270"><a href="#cb67-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-273"><a href="#cb67-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-274"><a href="#cb67-274" aria-hidden="true" tabindex="-1"></a>dt_fit <span class="ot">&lt;-</span> wf_RF <span class="sc">|&gt;</span> </span>
+<span id="cb67-275"><a href="#cb67-275" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit on the training set and evaluate on test set</span></span>
+<span id="cb67-276"><a href="#cb67-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(df_split, <span class="at">metrics =</span> <span class="fu">metric_set</span>(precision))</span>
+<span id="cb67-277"><a href="#cb67-277" aria-hidden="true" tabindex="-1"></a>dt_fit</span>
+<span id="cb67-278"><a href="#cb67-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-279"><a href="#cb67-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-280"><a href="#cb67-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-283"><a href="#cb67-283" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-284"><a href="#cb67-284" aria-hidden="true" tabindex="-1"></a>test_performance <span class="ot">&lt;-</span> dt_fit <span class="sc">|&gt;</span>  <span class="fu">collect_metrics</span>()</span>
+<span id="cb67-285"><a href="#cb67-285" aria-hidden="true" tabindex="-1"></a>test_performance</span>
+<span id="cb67-286"><a href="#cb67-286" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-287"><a href="#cb67-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-288"><a href="#cb67-288" aria-hidden="true" tabindex="-1"></a><span class="fu">## Matriz de confusion</span></span>
+<span id="cb67-289"><a href="#cb67-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-292"><a href="#cb67-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-293"><a href="#cb67-293" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(dt_fit) <span class="sc">|&gt;</span> </span>
+<span id="cb67-294"><a href="#cb67-294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(fraud, .pred_class)</span>
+<span id="cb67-295"><a href="#cb67-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-296"><a href="#cb67-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-299"><a href="#cb67-299" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-300"><a href="#cb67-300" aria-hidden="true" tabindex="-1"></a>final_RF <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(dt_fit)</span>
+<span id="cb67-301"><a href="#cb67-301" aria-hidden="true" tabindex="-1"></a>final_RF</span>
+<span id="cb67-302"><a href="#cb67-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-303"><a href="#cb67-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-304"><a href="#cb67-304" aria-hidden="true" tabindex="-1"></a><span class="fu">## ¿Cuáles fueron las variables más importantes?</span></span>
+<span id="cb67-305"><a href="#cb67-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-308"><a href="#cb67-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-309"><a href="#cb67-309" aria-hidden="true" tabindex="-1"></a>best_precision <span class="ot">&lt;-</span> <span class="fu">select_best</span>(tune_DF, <span class="at">metric=</span> <span class="st">"precision"</span>)</span>
+<span id="cb67-310"><a href="#cb67-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-311"><a href="#cb67-311" aria-hidden="true" tabindex="-1"></a>final_rf <span class="ot">&lt;-</span> <span class="fu">finalize_model</span>(</span>
+<span id="cb67-312"><a href="#cb67-312" aria-hidden="true" tabindex="-1"></a>  model_RF,</span>
+<span id="cb67-313"><a href="#cb67-313" aria-hidden="true" tabindex="-1"></a>  best_precision</span>
+<span id="cb67-314"><a href="#cb67-314" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb67-315"><a href="#cb67-315" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-316"><a href="#cb67-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-319"><a href="#cb67-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-320"><a href="#cb67-320" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span>
+<span id="cb67-321"><a href="#cb67-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-322"><a href="#cb67-322" aria-hidden="true" tabindex="-1"></a>final_rf <span class="sc">%&gt;%</span></span>
+<span id="cb67-323"><a href="#cb67-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"permutation"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb67-324"><a href="#cb67-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(fraud <span class="sc">~</span> .,</span>
+<span id="cb67-325"><a href="#cb67-325" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> df_train</span>
+<span id="cb67-326"><a href="#cb67-326" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">%&gt;%</span></span>
+<span id="cb67-327"><a href="#cb67-327" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span>
+<span id="cb67-328"><a href="#cb67-328" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-329"><a href="#cb67-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-330"><a href="#cb67-330" aria-hidden="true" tabindex="-1"></a><span class="fu"># Predecir un nuevo caso</span></span>
+<span id="cb67-331"><a href="#cb67-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-334"><a href="#cb67-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb67-335"><a href="#cb67-335" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un nuevo caso de ejemplo</span></span>
+<span id="cb67-336"><a href="#cb67-336" aria-hidden="true" tabindex="-1"></a>nuevo_caso <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb67-337"><a href="#cb67-337" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> <span class="st">"'M'"</span>,</span>
+<span id="cb67-338"><a href="#cb67-338" aria-hidden="true" tabindex="-1"></a>  <span class="at">amount =</span> <span class="fl">600.2</span>,</span>
+<span id="cb67-339"><a href="#cb67-339" aria-hidden="true" tabindex="-1"></a>  <span class="at">category=</span> <span class="st">"'es_fashion'"</span>,</span>
+<span id="cb67-340"><a href="#cb67-340" aria-hidden="true" tabindex="-1"></a>  <span class="at">age=</span> <span class="st">"'5'"</span></span>
+<span id="cb67-341"><a href="#cb67-341" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb67-342"><a href="#cb67-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-343"><a href="#cb67-343" aria-hidden="true" tabindex="-1"></a><span class="co"># Predecir con el modelo final</span></span>
+<span id="cb67-344"><a href="#cb67-344" aria-hidden="true" tabindex="-1"></a>prediccion <span class="ot">&lt;-</span> <span class="fu">predict</span>(final_RF, nuevo_caso)</span>
+<span id="cb67-345"><a href="#cb67-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-346"><a href="#cb67-346" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver la predicción</span></span>
+<span id="cb67-347"><a href="#cb67-347" aria-hidden="true" tabindex="-1"></a>prediccion</span>
+<span id="cb67-348"><a href="#cb67-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-349"><a href="#cb67-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb67-350"><a href="#cb67-350" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
