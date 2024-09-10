@@ -1,0 +1,329 @@
+---
+title: "Clase 4: Aprendizaje No Supervisado y Computer Vision"
+author: 
+- Pamela E. Pairo
+- Posgrado Digital Accounting
+title-slide-attributes:
+    data-background-image: "img/portada.jpg"
+format: 
+  revealjs:
+    theme: [mytheme.scss]
+    slide-number: c
+    incremental: false
+    width: 1600
+    height: 1000
+    logo: "img/logo.jpg"
+    footer: "[Aprendizaje No Supervisado y CV- PDA](https://github.com/PamelaPairo/intro_ia_pda)"
+    chalkboard:
+      theme: whiteboard
+      boardmarker-width: 5
+      buttons: true
+    echo: true
+editor: visual
+---
+
+## En la clase de hoy...
+
+[**En la primera parte:**]{style="color: #ae260e;"}
+
+. . .
+
+- ¿Qué es el Aprendizaje No Supervisado?
+
+- Kmeans
+
+- PCA
+
+- T-SNE
+
+- Práctica en R
+
+. . .
+
+[**Recreo**]{style="color: #ae260e;"} ☕🧉
+
+. . .
+
+[**En la segunda parte:**]{style="color: #ae260e;"}
+
+. . .
+
+- Generalidades de Computer Vision
+
+##  {background-color="#C5E1A5"}
+
+<h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
+
+[¿Qué es el aprendizaje NO supervisado?]{style="font-size: 100px;"}
+
+</h3>
+
+## ¿De qué se trata?
+
+Los datos etiquetados son escasos y caros
+
+Los datos no etiquetados son abundantes y gratis
+
+
+<h3 style="color:black;padding:5px;line-height:2em; text-align: center; position: absolute; top: 60%; width: 100%;">
+
+En el aprendizaje no supervisado, no se proporcionan etiquetas y el algoritmo de aprendizaje se centra únicamente en detectar la estructura en los datos de entrada.
+
+</h3>
+
+- [**Clustering**]{style="color: #88188a;"}: se busca encontrar agrupamientos o clusters dentro del dataset no etiquetado.
+
+- [**Reducción de dimensionalidad**]{style="color: #88188a;"}: se busca es identificar patrones en las características de los datos. La reducción de dimensionalidad se utiliza a menudo para facilitar la visualización de los datos, así como un método de preprocesamiento antes del aprendizaje supervisado.
+
+
+## ¿De qué se trata?
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/clusters.png){fig-align="center" width="60%"}
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/pca.png){fig-align="center" width="60%"}
+
+:::footer
+Imagenes extraidas de [aqui](https://programmerclick.com/article/90051499108/)
+:::
+
+## ¿Para qué?
+
+- Para conocer el dataset
+
+- Refinamiento de clases
+
+- Detección de outliers
+
+- **Conocer las causas latentes de los fenómenos que se están observando**
+
+> Los resultados dependen de las variables explicatorias utilizadas por lo que cobra importancia [**el análisis exploratorio de datos y la curación.**]{style="color: #88188a;"}
+Resulta importante el aporte de un/una experto/a de dominio para explicar los posibles agrupamientos y la elección de las variables relevantes.
+Se itera varias veces
+
+## Selección de Características
+
+- Eliminar características que introducen ruido
+
+- Eliminar características redundantes
+
+- Quedarse con las características más determinantes 
+
+## Posibles aplicaciones
+
+::: {.incremental}
+
+- [**Marketing**]{style="color: #88188a;"}: encontrar grupos de clientes con un comportamiento similar dada una gran base de datos de clientes que contienen sus propiedades y registros de compras anteriores.
+
+- [**Biología**]{style="color: #88188a;"}: definición de especies de plantas y animales dadas sus características.
+
+- [**Seguro**]{style="color: #88188a;"}: identificar fraudes.
+
+- [**Detección de comunidades**]{style="color: #88188a;"}
+
+:::
+
+## Clustering
+
+Se agrupan los datos de acuerdo a las variables seleccionadas y alguna medida de distancia.
+
+[**Pre-procesamiento de datos**]{style="color: #88188a;"}: ¿Conviene o no estandarizar los datos? ¿Cómo proceder con los datos faltantes? 
+<h3 style="color:black;padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
+
+¿Qué medida de distancia elegir?
+
+</h3>
+
+## Medidas de similitud-disimilitud entre objetos
+
+- El primer paso consiste en medir distancias (medida de disimilitud) o similitud entre objetos en un espacio multidimensional.
+
+- La distancia o disimilitud de un objeto consigo mismo vale 0, así como la medida de similitud vale 1
+
+- Distintas medidas de distancia según si se tienen variables continuas o discretas.
+
+## Medidas de similitud-disimilitud entre objetos
+
+[**Métricas para variables continuas:**]{style="color: #88188a;"}
+
+- Distancia euclídea
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/euclidea.png){fig-align="center" width="50%"}
+
+- Distancia de Manhattan o city block
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/manhattan.png){fig-align="center" width="35%"}
+
+## Medidas de similitud-disimilitud entre objetos
+
+[**Métricas para variables cualitativas:**]{style="color: #88188a;"}
+
+- Chi-cuadrado
+
+- Coeficiente de Jaccard(para v-dicotómicas: presencia-ausencia), similitud
+
+---
+## Métodos de agrupamiento (clustering) no jerárquico
+
+[**Kmeans**]{style="color: #88188a;"}
+
+La cantidad de grupos **_k_** se decide **a priori**
+
+1- Se eligen kpuntos arbitrariamente (semillas), y se los considera como centroides de los k clusters
+
+2- Se asignan los objetos al centroides más cercano, 
+formando kclusters
+
+3- Se calculan los centroides de estos clusters arbitrarios
+
+4- Se realiza una nueva partición de los objetos, asignándolos al centroide más cercano
+
+5- El proceso se repite hasta que no hay pasajes de individuos de un cluster a otro
+
+## Kmeans
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/kmeans.png){fig-align="center" width="35%"}
+
+
+## Método del codo
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/codo.png){fig-align="center"}
+
+## Comentarios 
+
+- Ojo con clusters conteniendo sólo uno o dos objetos ¿Posibles outliers? Extraer y repetir el análisis
+
+- Hay muchas decisiones subjetivas: variables, medida de di(similitud), método de agrupamiento… que impactan fuertemente en los resultados.
+
+- Existen muchas técnicas más Mean Shift, GMM, Clustering jerárquico, etc.
+
+## Reducción de dimensionalidad
+
+Hoy vemos:
+
+- Análisis de componentes principales (PCA)
+
+- T-SNE
+
+**pero... hay muchas más!**
+
+## PCA
+
+> Es una técnica de reducción de la dimensión de datos MV: a partir de p variables originales se busca encontrar un menor número de variables (componentes principales), independientes entre sí, que reflejen la estructura de los datos con la menor pérdida de información
+Revelar patrones en los datos que pueden no ser detectados al analizar las variables por separado
+
+## PCA
+
+![](https://raw.githubusercontent.com/PamelaPairo/Taller_IA/main/clases/images/pca_1.png){fig-align="center"}
+
+- Es posible extraer p CP, aunque es deseable que los primeros CP resuman la mayoría de la información de las variables originales
+
+- Esto es posible si existe asociación entre las variables originales: es posible reducir la información contenidas en estas variables asociadas entre sí en un menor número de variables (reducción de la dimensión)
+
+## Algunas consideraciones para PCA
+
+- No es una técnica de inferencia estadística (no se prueban hipótesis).
+
+- Como usa medidas de asociación lineal, el ACP es más eficiente si las variables se relacionan linealmente
+
+- Es sensible a outliers
+
+## T-SNE
+
+- Técnica de reducción de dimensionalidad no lineal.
+
+- t-SNE se utiliza principalmente para comprender datos de alta dimensión y proyectarlos en espacios de baja dimensión (como 2D o 3D).
+
+- El objetivo de este algoritmo es encontrar una distribución de probabilidad similar en un espacio de baja dimensión.
+
+##  {background-color="#C5E1A5"}
+
+<h3 style="color:black;background-color: rgba(255,255,255,0.65);padding:5px;line-height:2em; text-align: center; position: absolute; top: 40%; width: 100%;">
+
+[Introducción a Visión por Computadora]{style="font-size: 100px;"}
+
+</h3>
+
+## ¿Qué es la Visión?
+
+> Capacidad de interpretar el entorno a partir de los rayos de luz que alcanzan el ojo
+
+- Distinguir colores, texturas, formas, figuras, objetos y más
+
+- Percibir patrones de luz, translucidez  y sombras
+
+- Diferenciar objetos en primer plano del fondo
+
+- Percibir la estructura tridimensional del mundo
+
+## ¿Qué es la Visión por computador?
+
+La visión computacional (CV, por su nombre en inglés Computer Vision) es un campo científico interdisciplinario que se ocupa de cómo las computadoras pueden obtener una comprensión de alto nivel a partir de imágenes o videos digitales.
+
+.  .  .
+
+::: {layout-ncol=3 layout-valign="bottom"}
+
+![Detección de Objetos](img/od.jfif){width=100%}
+
+![Segmentación](img/segmentation.jfif){width=100%}
+
+![OCR](img/ocr.jfif){width=100%}
+
+:::
+
+## Imágen digital 
+
+- El **píxel** es la unidad de información más pequeña en una imágen y representa un punto en la imagen, de un color particular.
+
+- La estructura de una imagen es siempre una matriz de N x M pixeles.
+
+![](img/img.png){width=100%}
+
+## Imágen digital a color
+
+![](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*8k6Yk6MhED2SxF2zLctG7g.png){width=100%}
+
+## Tareas en Computer Vision
+
+**Clasificación de imágenes**: reconocer si una clase predefinida de objetos está presente en una imagen o no. Hotdog vs not hotdog. Cat vs dog. Cáncer vs no cáncer.
+
+![OCR](img/mnist.jfif){width=100%}
+
+## Tareas en Computer Vision
+
+**Localización de objetos**: Típicamente, acompañada de una clasificación. Consiste en decir, dada una imágen, el recuadro en el cual un objeto está presente. Este recuadro se conoce como _bounding box_.
+
+## Tareas en Computer Vision
+
+**Detección de objetos**: Es lo mismo que localización, pero permitiendo que haya más de una clase y localizando diferentes individuos. Se suelen utilizar modelos preentrenados como por ejemplo [YOLO](https://docs.ultralytics.com/)
+
+<iframe width="950" height="680" src="https://www.youtube.com/embed/chzq2E75M84" frameborder="0" allowfullscreen></iframe>
+
+
+## Tareas en Computer Vision
+
+**Segmentación de imágenes**: Una versión más refinada donde en lugar de obtener una _bounding box_ se obtiene una máscara de pixeles especificando los pixeles especificos que corresponden a un objeto dado en una imágen.
+
+::: {layout-nrow=1 layout-valign="bottom"}
+
+![](img/seg.jfif)
+
+![](img/crop.jfif){width=1000%}
+
+:::
+
+##
+
+La visión artificial está atravesando un boom y hay muchos subareas específicas con problemas particulares: reconocimiento facial, identificación facial, estimación de pose, detección de landmarks faciales, txt2img, im2img, image captioning, son solo algunas de ellas.
+
+Aplicaciones:
+
+- Inspección automática y procesos de control (por ejemplo, en lineas de montaje)
+
+- Identificación y conteo de especies
+
+- Vehículos autónomos
+
+- Detección de celulas cancerígenas por imágenes.
+
+[Ver publicación en LinkedIn](https://www.linkedin.com/posts/nahuellenardon_inteligenciaartificial-procesamientodeimaergenes-activity-7238368444969082880-sEUI?utm_source=share&utm_medium=member_desktop)

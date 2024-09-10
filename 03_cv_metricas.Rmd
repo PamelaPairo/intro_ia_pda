@@ -301,7 +301,6 @@ nuevo_caso <- data.frame(
 # Predecir con el modelo final
 prediccion <- predict(final_RF, nuevo_caso)
 
-# Ver la predicción
 prediccion
 
 ```

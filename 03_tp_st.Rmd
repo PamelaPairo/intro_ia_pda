@@ -32,6 +32,7 @@ Se extrajo información de _Yahoo Finance_ sobre índice S&P 500 desde el 2015 a
 data <- read_csv('C:/Users/Pame/Desktop/intro_ia_pda/data/yahoo_stock.csv')
 glimpse(data)
 ```
+
 ```{r}
 serie_tiempo<- ts(data$High, 
          start = c(2015, 11, 23), 
@@ -99,12 +100,12 @@ Proceso de promedio móvil (MA), un proceso en el que el valor actual de la seri
 PACF define AR (p)
 
 ```{r}
-acf(serie_tiempo, lag.max = 200, plot=T)
+acf(serie_tiempo, lag.max = 300, plot=T)
 ```
 
 
 ```{r}
-pacf(serie_tiempo, main = "Gráfico de ACF", lag.max = 30)
+pacf(serie_tiempo, main = "Gráfico de ACF", lag.max = 300)
 ```
 ## ARIMA y SARIMA
 
