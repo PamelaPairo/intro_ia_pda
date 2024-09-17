@@ -62,6 +62,81 @@ editor: visual
 
 ## Proceso del análisis del texto
 
-![](https://raw.githubusercontent.com/PamelaPairo/clases_pda/main/2023/img/text.png){width="100%"}
+![](img/text_proc.png){width="50%"}
+
+## Tokenización
+
+Es el proceso de convertir texto en unidades más pequeñas llamadas tokens. Los tokens serán la unidad mínima de representación para un modelo de NLP.
+
+![](img/tokenization.png){width="65%" fig-align="center"}
+
+## Remoción de _stopwords_
+
+_Stopwords_ es el nombre que reciben las palabras sin valor semántico como artículos, pronombres, preposiciones, etc. Suelen filtrarse según la tarea a realizar
+
+![](img/stopword.png){width="65%" fig-align="center"}
+
+## Normalización
+
+Implica limpiar caracteres extraños, convertir a minúscula, y quedarse con la raíz de las palabras, según lo requiera la tarea.
+
+![](img/lem_stem.webp){width="50%" fig-align="center"}
+
+## Vectorización
+
+![](img/vect.png){width="100%" fig-align="center"}
+
+Existen distintos métodos para llevar a cabo esta vectorización:
+
+-  Bag of Words
+- TF-IDF
+
+Los métodos no consideran el orden de las palabras ni su significado.
+
+- Embeddings
+
+## Clasificación
+
+![](img/spam.png){width="100%" fig-align="center"}
 
 
+## LLM: ejemplo CHATGPT
+
+Los modelos de lenguaje de gran tamaño, también conocidos como LLM, son modelos de aprendizaje profundo muy grandes que se preentrenan con grandes cantidades de datos. El transformador subyacente es un conjunto de redes neuronales que consta de un codificador y un decodificador con capacidades de autoatención.
+
+**ChatGPT** es un ejemplo de un LLM (Large Language Model) basado en la arquitectura GPT (Generative Pre-trained Transformer), que es un tipo de modelo de lenguaje de gran escala entrenado en enormes cantidades de texto para aprender patrones, contextos y relaciones en el lenguaje. Esto le permite realizar tareas como generar texto coherente, responder preguntas, asistir en la redacción de documentos y más.
+
+## No todo es CHATGPT
+
+![](img/gpt.png){width="100%" fig-align="center"}
+
+Imágen sacada de HUMAI.
+
+## Estructura de un prompt
+
+- Tarea: Redactar con un verbo al principio. Puede ser una tarea única o tener varios pasos
+
+- Contexto: Proporciona información de fondo, datos o contexto para la generación de contenido.
+
+- Ejemplo: proporcionar ejemplos de estilo, estructura o contenido deseado.
+
+- Rol: persprectiva al actuar (ej, experto, crítico, gerente, entrevistador)
+
+- Formato: cómo se quiere que se vean las respuestas (email, markdown, código)
+
+- Tono: casual, formal, entusiasta, amigable
+
+
+## Estructura de un prompt
+
+Actúa como una contadora con una antiguedad de 10 años que trabaja para una aseguradora llama "seguros sa". La empresa registró 5% mas  de transacciones fraudulentas respecto al año pasado. Redacta un mail conciso para el gerente de la aseguradora donde solo le indiques que hubo un aumento de transacciones fraudulentas y le solicites una reunión. Utilizá un tono formal y urgente.
+
+![](img/prompt.png){width="65%" fig-align="center"}
+
+## Tipos de aprendizaje {chalkboard-buttons="true"}
+
+![](img/ml.png){fig-align="center"}
+
+## Ciclo de un proyecto en ciencia de datos
+
+![](img/ciclo_data.png){fig-align="center"}

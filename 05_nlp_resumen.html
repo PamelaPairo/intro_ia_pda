@@ -380,9 +380,79 @@ Posgrado Digital Accounting
 </ul>
 
 <img data-src="img/nlp_task.webp" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
-<section id="definición-1" class="slide level2">
-<h2>Definición</h2>
-<p><img data-src="https://raw.githubusercontent.com/PamelaPairo/clases_pda/main/2023/img/text.png" style="width:100.0%"></p>
+<section id="proceso-del-análisis-del-texto" class="slide level2">
+<h2>Proceso del análisis del texto</h2>
+
+<img data-src="img/text_proc.png" style="width:50.0%" class="r-stretch"></section>
+<section id="tokenización" class="slide level2">
+<h2>Tokenización</h2>
+<p>Es el proceso de convertir texto en unidades más pequeñas llamadas tokens. Los tokens serán la unidad mínima de representación para un modelo de NLP.</p>
+
+<img data-src="img/tokenization.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"></section>
+<section id="remoción-de-stopwords" class="slide level2">
+<h2>Remoción de <em>stopwords</em></h2>
+<p><em>Stopwords</em> es el nombre que reciben las palabras sin valor semántico como artículos, pronombres, preposiciones, etc. Suelen filtrarse según la tarea a realizar</p>
+
+<img data-src="img/stopword.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"></section>
+<section id="normalización" class="slide level2">
+<h2>Normalización</h2>
+<p>Implica limpiar caracteres extraños, convertir a minúscula, y quedarse con la raíz de las palabras, según lo requiera la tarea.</p>
+
+<img data-src="img/lem_stem.webp" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<section id="vectorización" class="slide level2">
+<h2>Vectorización</h2>
+
+<img data-src="img/vect.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"><p>Existen distintos métodos para llevar a cabo esta vectorización:</p>
+<ul>
+<li>Bag of Words</li>
+<li>TF-IDF</li>
+</ul>
+<p>Los métodos no consideran el orden de las palabras ni su significado.</p>
+<ul>
+<li>Embeddings</li>
+</ul>
+</section>
+<section id="clasificación" class="slide level2">
+<h2>Clasificación</h2>
+
+<img data-src="img/spam.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
+<section id="llm-ejemplo-chatgpt" class="slide level2">
+<h2>LLM: ejemplo CHATGPT</h2>
+<p>Los modelos de lenguaje de gran tamaño, también conocidos como LLM, son modelos de aprendizaje profundo muy grandes que se preentrenan con grandes cantidades de datos. El transformador subyacente es un conjunto de redes neuronales que consta de un codificador y un decodificador con capacidades de autoatención.</p>
+<p><strong>ChatGPT</strong> es un ejemplo de un LLM (Large Language Model) basado en la arquitectura GPT (Generative Pre-trained Transformer), que es un tipo de modelo de lenguaje de gran escala entrenado en enormes cantidades de texto para aprender patrones, contextos y relaciones en el lenguaje. Esto le permite realizar tareas como generar texto coherente, responder preguntas, asistir en la redacción de documentos y más.</p>
+</section>
+<section id="no-todo-es-chatgpt" class="slide level2">
+<h2>No todo es CHATGPT</h2>
+
+<img data-src="img/gpt.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"><p>Imágen sacada de HUMAI.</p>
+</section>
+<section id="estructura-de-un-prompt" class="slide level2">
+<h2>Estructura de un prompt</h2>
+<ul>
+<li><p>Tarea: Redactar con un verbo al principio. Puede ser una tarea única o tener varios pasos</p></li>
+<li><p>Contexto: Proporciona información de fondo, datos o contexto para la generación de contenido.</p></li>
+<li><p>Ejemplo: proporcionar ejemplos de estilo, estructura o contenido deseado.</p></li>
+<li><p>Rol: persprectiva al actuar (ej, experto, crítico, gerente, entrevistador)</p></li>
+<li><p>Formato: cómo se quiere que se vean las respuestas (email, markdown, código)</p></li>
+<li><p>Tono: casual, formal, entusiasta, amigable</p></li>
+</ul>
+</section>
+<section id="estructura-de-un-prompt-1" class="slide level2">
+<h2>Estructura de un prompt</h2>
+<p>Actúa como una contadora con una antiguedad de 10 años que trabaja para una aseguradora llama “seguros sa”. La empresa registró 5% mas de transacciones fraudulentas respecto al año pasado. Redacta un mail conciso para el gerente de la aseguradora donde solo le indiques que hubo un aumento de transacciones fraudulentas y le solicites una reunión. Utilizá un tono formal y urgente.</p>
+
+<img data-src="img/prompt.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"></section>
+<section id="tipos-de-aprendizaje" class="slide level2" data-chalkboard-buttons="true">
+<h2>Tipos de aprendizaje</h2>
+
+<img data-src="img/ml.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="ciclo-de-un-proyecto-en-ciencia-de-datos" class="slide level2">
+<h2>Ciclo de un proyecto en ciencia de datos</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/ciclo_data.png" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
 <div class="quarto-auto-generated-content">
 <p><img src="img/logo.jpg" class="slide-logo"></p>
 <div class="footer footer-default">
